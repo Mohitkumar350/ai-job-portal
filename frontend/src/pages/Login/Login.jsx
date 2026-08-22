@@ -94,7 +94,7 @@ function Login() {
       const firebaseToken = await credential.user.getIdToken(true);
       const requestedRole = localStorage.getItem(`signup-role:${cleanEmail}`);
       const response = await fetch(
-        "http://localhost:5000/api/auth/firebase-email-login",
+        `${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/auth/firebase-email-login`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

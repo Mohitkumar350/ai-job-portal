@@ -1,5 +1,6 @@
-const API_URL = "http://localhost:5000/api/applications";
-const ADMIN_API_URL = "http://localhost:5000/api/admin";
+const API_ROOT = import.meta.env.VITE_API_URL || "http://localhost:5000";
+const API_URL = `${API_ROOT}/api/applications`;
+const ADMIN_API_URL = `${API_ROOT}/api/admin`;
 
 // =====================================================
 // APPLY FOR JOB

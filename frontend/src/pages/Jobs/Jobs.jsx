@@ -68,7 +68,9 @@ function Jobs() {
       setSearchParams(params, { replace: true });
       setLoading(true);
       setError("");
-      fetch(`http://localhost:5000/api/jobs?${params}`)
+      fetch(
+        `${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/jobs?${params}`,
+      )
         .then((response) => {
           if (!response.ok) throw new Error("Unable to load jobs");
           return response.json();
