@@ -1,0 +1,93 @@
+ .saved-jobs-page {
+  width: 90%;
+  max-width: 1300px;
+  margin: 40px auto 70px;
+}
+
+/* =========================
+   HEADER
+========================= */
+
+.saved-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.saved-header h1 {
+  margin: 0;
+  color: #0f172a;
+  font-size: 40px;
+  font-weight: 700;
+}
+
+.saved-header p {
+  margin-top: 12px;
+  color: #64748b;
+  font-size: 16px;
+}
+
+/* =========================
+   JOB GRID
+========================= */
+
+.saved-jobs-page .jobs-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 25px;
+}
+
+/* =========================
+   EMPTY STATE
+========================= */
+
+.empty-state {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 18px;
+  padding: 70px 30px;
+  text-align: center;
+  box-shadow: 0 6px 20px rgba(15, 23, 42, 0.06);
+}
+
+.empty-state h2 {
+  color: #1e293b;
+  margin-bottom: 10px;
+}
+
+.empty-state p {
+  color: #64748b;
+}
+
+/* =========================
+   TABLET
+========================= */
+
+@media (max-width: 1000px) {
+  .saved-jobs-page .jobs-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 650px) {
+  .saved-jobs-page {
+    width: 92%;
+    margin-top: 25px;
+  }
+
+  .saved-header h1 {
+    font-size: 30px;
+  }
+
+  .saved-jobs-page .jobs-grid {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .empty-state {
+    padding: 50px 20px;
+  }
+}

@@ -1,0 +1,22 @@
+# Dependencies and build output
+node_modules/
+frontend/dist/
+Backend/logs/
+*.log
+npm-debug.log*
+
+# Local environment files
+.env
+.env.*
+!.env.example
+
+# Firebase and other service credentials
+Backend/firebase-service-account.json
+*.key
+*.pem
+
+# Editor and operating-system files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

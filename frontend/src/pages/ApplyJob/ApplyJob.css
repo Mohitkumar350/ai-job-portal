@@ -1,0 +1,133 @@
+.apply-page {
+  min-height: 100vh;
+  background: #f8fafc;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  padding: 50px 20px;
+}
+
+.apply-card {
+  width: 100%;
+  max-width: 650px;
+
+  background: #ffffff;
+
+  padding: 40px;
+
+  border-radius: 20px;
+
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
+
+  border: 1px solid #e2e8f0;
+}
+
+.apply-header {
+  margin-bottom: 30px;
+}
+
+.apply-card h1 {
+  color: #1e293b;
+  font-size: 30px;
+  margin-bottom: 10px;
+}
+
+.apply-card p {
+  color: #64748b;
+  margin: 0;
+}
+
+.apply-card form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group label {
+  font-weight: 600;
+  color: #334155;
+}
+
+.apply-card input,
+.apply-card textarea {
+  width: 100%;
+  box-sizing: border-box;
+
+  padding: 14px 15px;
+
+  border: 1px solid #cbd5e1;
+
+  border-radius: 10px;
+
+  font-size: 15px;
+
+  outline: none;
+
+  transition: 0.2s;
+}
+
+.apply-card input:focus,
+.apply-card textarea:focus {
+  border-color: #2563eb;
+
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.apply-card textarea {
+  resize: vertical;
+}
+
+.apply-card button {
+  width: 100%;
+
+  padding: 15px;
+
+  border: none;
+
+  background: #2563eb;
+
+  color: white;
+
+  font-size: 16px;
+
+  font-weight: 600;
+
+  border-radius: 10px;
+
+  cursor: pointer;
+
+  transition: 0.25s;
+}
+
+.apply-card button:hover {
+  background: #1d4ed8;
+  transform: translateY(-1px);
+}
+
+.apply-card button:disabled {
+  background: #94a3b8;
+  cursor: not-allowed;
+  transform: none;
+}
+
+@media (max-width: 600px) {
+  .apply-page {
+    padding: 25px 15px;
+  }
+
+  .apply-card {
+    padding: 25px 20px;
+  }
+
+  .apply-card h1 {
+    font-size: 24px;
+  }
+}

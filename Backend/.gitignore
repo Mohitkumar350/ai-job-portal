@@ -1,0 +1,8 @@
+ # Firebase Admin credentials
+firebase-service-account.json
+
+# Environment variables
+.env
+
+# Dependencies
+node_modules

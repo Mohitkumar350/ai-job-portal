@@ -1,0 +1,692 @@
+/* ==========================================
+   PROFILE PAGE
+========================================== */
+
+.profile-page {
+  min-height: calc(100vh - 80px);
+  width: 100%;
+
+  padding: 50px 20px;
+
+  background: #f8fafc;
+
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+
+  box-sizing: border-box;
+}
+
+/* ==========================================
+   PROFILE CARD
+========================================== */
+
+.profile-card {
+  width: 100%;
+  max-width: 600px;
+
+  padding: 35px;
+
+  background: #ffffff;
+
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+
+  text-align: center;
+
+  box-sizing: border-box;
+
+  height: auto;
+  min-height: 0;
+
+  overflow: visible;
+}
+
+/* ==========================================
+   PROFILE IMAGE
+========================================== */
+
+.profile-image-container {
+  width: 100%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  margin-bottom: 20px;
+}
+
+.profile-img {
+  width: 110px;
+  height: 110px;
+
+  border-radius: 50%;
+
+  object-fit: cover;
+
+  border: 4px solid #dbeafe;
+
+  display: block;
+}
+
+/* ==========================================
+   EDIT FORM
+========================================== */
+
+.profile-edit-form {
+  width: 100%;
+
+  text-align: left;
+
+  height: auto;
+  min-height: 0;
+
+  overflow: visible;
+
+  box-sizing: border-box;
+}
+
+/* ==========================================
+   FORM GROUP
+========================================== */
+
+.form-group {
+  width: 100%;
+
+  margin-bottom: 18px;
+
+  box-sizing: border-box;
+}
+
+.form-group label {
+  display: block;
+
+  margin-bottom: 7px;
+
+  color: #1e293b;
+
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.form-group small {
+  display: block;
+
+  margin-top: 5px;
+
+  color: #64748b;
+
+  font-size: 12px;
+}
+
+/* ==========================================
+   INPUTS
+========================================== */
+
+.profile-card input,
+.profile-card textarea {
+  width: 100%;
+
+  box-sizing: border-box;
+
+  padding: 13px 15px;
+
+  border: 1px solid #cbd5e1;
+  border-radius: 9px;
+
+  background: #ffffff;
+
+  color: #1e293b;
+
+  font-size: 14px;
+
+  outline: none;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.profile-card input:focus,
+.profile-card textarea:focus {
+  border-color: #2563eb;
+
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.profile-card input:disabled {
+  background: #f1f5f9;
+
+  color: #64748b;
+
+  cursor: not-allowed;
+}
+
+.profile-card textarea {
+  min-height: 110px;
+
+  resize: vertical;
+}
+
+/* ==========================================
+   ACCOUNT ROLE
+========================================== */
+
+.profile-role-display {
+  width: 100%;
+
+  display: flex;
+
+  justify-content: space-between;
+  align-items: center;
+
+  box-sizing: border-box;
+
+  padding: 14px 16px;
+
+  margin-top: 5px;
+  margin-bottom: 20px;
+
+  background: #f8fafc;
+
+  border: 1px solid #e2e8f0;
+
+  border-radius: 9px;
+
+  height: auto;
+
+  min-height: 48px;
+}
+
+.profile-role-display span {
+  color: #1e293b;
+
+  font-size: 14px;
+
+  font-weight: 600;
+}
+
+.profile-role-display strong {
+  color: #2563eb;
+
+  text-transform: capitalize;
+
+  font-size: 14px;
+}
+
+/* ==========================================
+   SAVE BUTTON CONTAINER
+========================================== */
+
+.profile-actions {
+  display: flex !important;
+
+  flex-direction: column;
+
+  align-items: stretch;
+
+  justify-content: flex-start;
+
+  width: 100% !important;
+
+  height: auto !important;
+
+  min-height: 50px !important;
+
+  max-height: none !important;
+
+  box-sizing: border-box;
+
+  margin-top: 20px !important;
+
+  margin-bottom: 10px !important;
+
+  padding: 0 !important;
+
+  overflow: visible !important;
+
+  visibility: visible !important;
+}
+
+/* ==========================================
+   SAVE BUTTON
+========================================== */
+
+.profile-actions .save-btn {
+  display: flex !important;
+
+  align-items: center !important;
+  justify-content: center !important;
+
+  width: 100% !important;
+
+  height: 50px !important;
+
+  min-height: 50px !important;
+
+  max-height: none !important;
+
+  box-sizing: border-box;
+
+  padding: 13px 20px !important;
+
+  margin: 0 !important;
+
+  background: #2563eb !important;
+
+  color: #ffffff !important;
+
+  border: 1px solid #2563eb !important;
+
+  border-radius: 10px !important;
+
+  font-size: 16px !important;
+
+  font-weight: 600 !important;
+
+  line-height: 1.2;
+
+  text-align: center;
+
+  cursor: pointer;
+
+  opacity: 1 !important;
+
+  visibility: visible !important;
+
+  position: static !important;
+
+  transform: none;
+
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+.profile-actions .save-btn:hover {
+  background: #1d4ed8 !important;
+
+  border-color: #1d4ed8 !important;
+
+  transform: translateY(-1px);
+}
+
+.profile-actions .save-btn:active {
+  transform: translateY(0);
+}
+
+.profile-actions .save-btn:disabled {
+  background: #94a3b8 !important;
+
+  border-color: #94a3b8 !important;
+
+  color: #ffffff !important;
+
+  cursor: not-allowed;
+
+  opacity: 0.8 !important;
+
+  transform: none !important;
+}
+
+/* ==========================================
+   SUCCESS MESSAGE
+========================================== */
+
+.profile-success {
+  width: 100%;
+
+  box-sizing: border-box;
+
+  padding: 12px 15px;
+
+  margin-bottom: 20px;
+
+  border-radius: 10px;
+
+  background: #dcfce7;
+
+  border: 1px solid #86efac;
+
+  color: #166534;
+
+  font-size: 14px;
+
+  text-align: left;
+}
+
+/* ==========================================
+   ERROR MESSAGE
+========================================== */
+
+.profile-error-message {
+  width: 100%;
+
+  box-sizing: border-box;
+
+  padding: 12px 15px;
+
+  margin-bottom: 20px;
+
+  border-radius: 10px;
+
+  background: #fee2e2;
+
+  border: 1px solid #fecaca;
+
+  color: #b91c1c;
+
+  font-size: 14px;
+
+  text-align: left;
+}
+
+/* ==========================================
+   VIEW MODE
+========================================== */
+
+.profile-view {
+  width: 100%;
+
+  box-sizing: border-box;
+}
+
+.profile-view h2 {
+  color: #0f172a;
+
+  margin: 5px 0 8px;
+
+  font-size: 28px;
+
+  line-height: 1.3;
+}
+
+.profile-email {
+  color: #64748b;
+
+  margin-bottom: 15px;
+
+  word-break: break-word;
+}
+
+.role {
+  display: inline-block;
+
+  padding: 7px 15px;
+
+  background: #eff6ff;
+
+  color: #2563eb;
+
+  border-radius: 20px;
+
+  font-size: 14px;
+
+  font-weight: 600;
+
+  text-transform: capitalize;
+
+  margin-bottom: 20px;
+}
+
+/* ==========================================
+   PROFILE INFORMATION
+========================================== */
+
+.profile-info {
+  width: 100%;
+
+  padding: 20px;
+
+  box-sizing: border-box;
+
+  background: #f8fafc;
+
+  border-radius: 14px;
+
+  text-align: left;
+
+  margin-top: 20px;
+}
+
+.profile-info-item {
+  display: flex;
+
+  gap: 14px;
+
+  margin-bottom: 18px;
+}
+
+.profile-info-item:last-child {
+  margin-bottom: 0;
+}
+
+.profile-info-item > span {
+  font-size: 20px;
+
+  flex-shrink: 0;
+}
+
+.profile-info-item strong {
+  color: #1e293b;
+}
+
+.profile-info-item p {
+  margin: 5px 0 0;
+
+  color: #475569;
+
+  line-height: 1.5;
+
+  word-break: break-word;
+}
+
+/* ==========================================
+   RESUME BUTTON
+========================================== */
+
+.resume-btn {
+  display: inline-block;
+
+  margin: 15px 0;
+
+  padding: 11px 18px;
+
+  background: #2563eb;
+
+  color: #ffffff;
+
+  border-radius: 10px;
+
+  text-decoration: none;
+
+  font-weight: 600;
+
+  transition: 0.2s ease;
+}
+
+.resume-btn:hover {
+  background: #1d4ed8;
+
+  transform: translateY(-1px);
+}
+
+/* ==========================================
+   EDIT BUTTON
+========================================== */
+
+.edit-btn {
+  width: 100%;
+
+  min-height: 48px;
+
+  margin-top: 20px;
+
+  padding: 12px 18px;
+
+  background: #ffffff;
+
+  color: #2563eb;
+
+  border: 1px solid #2563eb;
+
+  border-radius: 10px;
+
+  font-size: 15px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: 0.2s ease;
+}
+
+.edit-btn:hover {
+  background: #eff6ff;
+}
+
+/* ==========================================
+   LOADING
+========================================== */
+
+.profile-loading {
+  width: 100%;
+
+  text-align: center;
+
+  padding: 30px 0;
+}
+
+.profile-loading h2 {
+  margin: 15px 0 8px;
+
+  color: #0f172a;
+}
+
+.profile-loading p {
+  color: #64748b;
+}
+
+/* ==========================================
+   LOADING SPINNER
+========================================== */
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+
+  margin: 0 auto;
+
+  border: 4px solid #e2e8f0;
+
+  border-top-color: #2563eb;
+
+  border-radius: 50%;
+
+  animation: profile-spin 0.8s linear infinite;
+}
+
+@keyframes profile-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ==========================================
+   PROFILE ERROR
+========================================== */
+
+.profile-error {
+  width: 100%;
+
+  box-sizing: border-box;
+
+  padding: 25px;
+
+  text-align: center;
+
+  background: #fee2e2;
+
+  border: 1px solid #fecaca;
+
+  border-radius: 12px;
+
+  color: #b91c1c;
+}
+
+.profile-error h2 {
+  margin-bottom: 10px;
+
+  color: #991b1b;
+}
+
+.profile-error p {
+  margin-bottom: 20px;
+}
+
+/* ==========================================
+   RETRY BUTTON
+========================================== */
+
+.retry-btn {
+  padding: 11px 20px;
+
+  background: #2563eb;
+
+  color: white;
+
+  border: none;
+
+  border-radius: 8px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+.retry-btn:hover {
+  background: #1d4ed8;
+}
+
+/* ==========================================
+   MOBILE
+========================================== */
+
+@media (max-width: 600px) {
+  .profile-page {
+    padding: 30px 15px;
+  }
+
+  .profile-card {
+    max-width: 100%;
+
+    padding: 25px 20px;
+
+    border-radius: 16px;
+  }
+
+  .profile-img {
+    width: 90px;
+    height: 90px;
+  }
+
+  .profile-view h2 {
+    font-size: 24px;
+  }
+
+  .profile-actions {
+    width: 100% !important;
+
+    display: flex !important;
+
+    height: auto !important;
+  }
+
+  .profile-actions .save-btn {
+    width: 100% !important;
+
+    height: 50px !important;
+  }
+}

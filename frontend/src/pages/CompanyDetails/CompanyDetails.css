@@ -1,0 +1,44 @@
+.company-page {
+  min-height: 100vh;
+  background: #f8fafc;
+  padding: 50px;
+}
+
+.company-card {
+  max-width: 900px;
+  margin: auto;
+  background: white;
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+}
+
+.company-logo {
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+}
+
+.company-type {
+  display: inline-block;
+  margin-top: 10px;
+  background: #2563eb;
+  color: white;
+  padding: 8px 18px;
+  border-radius: 20px;
+}
+
+.job-item {
+  padding: 20px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.job-item h3 {
+  margin-bottom: 8px;
+}
+
+.job-item a {
+  color: #2563eb;
+  text-decoration: none;
+  font-weight: 600;
+}

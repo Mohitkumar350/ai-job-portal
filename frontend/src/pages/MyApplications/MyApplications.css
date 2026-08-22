@@ -1,0 +1,332 @@
+.application-card a {
+  color: #2563eb;
+  font-weight: 600;
+  text-decoration: none;
+}
+.application-timeline {
+  display: grid;
+  gap: 10px;
+  margin: 24px 0;
+  padding: 16px;
+  border-left: 2px solid #cbd5e1;
+}
+.timeline-step {
+  color: #94a3b8;
+  font-weight: 600;
+}
+.timeline-step.reached {
+  color: #166534;
+}
+.timeline-step.rejected {
+  color: #b91c1c;
+}
+.applications-page {
+  min-height: 100vh;
+  background: #f8fafc;
+  padding: 50px 6%;
+}
+
+/* HEADER */
+
+.applications-header {
+  max-width: 1200px;
+  margin: 0 auto 35px;
+  text-align: center;
+}
+
+.applications-header h1 {
+  font-size: 36px;
+  margin-bottom: 10px;
+  color: #111827;
+}
+
+.applications-header p {
+  color: #6b7280;
+  font-size: 16px;
+}
+
+/* APPLICATION GRID */
+
+.applications-grid {
+  max-width: 1200px;
+  margin: auto;
+
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+
+  gap: 25px;
+}
+
+/* CARD */
+
+.application-card {
+  background: #ffffff;
+
+  border-radius: 18px;
+
+  padding: 25px;
+
+  border: 1px solid #e5e7eb;
+
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
+
+  transition: 0.3s ease;
+}
+
+.application-card:hover {
+  transform: translateY(-5px);
+
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+}
+
+/* TOP */
+
+.application-top {
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: flex-start;
+
+  gap: 15px;
+
+  margin-bottom: 20px;
+}
+
+.application-top h2 {
+  margin: 0 0 7px;
+
+  font-size: 22px;
+
+  color: #111827;
+}
+
+.application-top h3 {
+  margin: 0;
+
+  font-size: 16px;
+
+  color: #2563eb;
+
+  font-weight: 600;
+}
+
+/* STATUS */
+
+.status {
+  padding: 7px 12px;
+
+  border-radius: 20px;
+
+  background: #dbeafe;
+
+  color: #1d4ed8;
+
+  font-size: 13px;
+
+  font-weight: 700;
+
+  white-space: nowrap;
+}
+
+.status.applied {
+  background: #dbeafe;
+
+  color: #1d4ed8;
+}
+
+.status.shortlisted {
+  background: #dcfce7;
+
+  color: #15803d;
+}
+
+.status.rejected {
+  background: #fee2e2;
+
+  color: #dc2626;
+}
+
+.status.selected {
+  background: #dcfce7;
+
+  color: #15803d;
+}
+
+/* INFO */
+
+.application-info {
+  border-top: 1px solid #e5e7eb;
+
+  border-bottom: 1px solid #e5e7eb;
+
+  padding: 18px 0;
+
+  margin-bottom: 15px;
+}
+
+.application-info p {
+  margin: 10px 0;
+
+  color: #4b5563;
+
+  line-height: 1.6;
+}
+
+.application-info strong {
+  color: #111827;
+}
+
+/* DATE */
+
+.application-date {
+  font-size: 14px;
+
+  color: #6b7280;
+
+  margin-bottom: 20px;
+}
+
+/* ACTIONS */
+
+.application-actions {
+  display: flex;
+
+  justify-content: flex-end;
+}
+
+.delete-application-btn {
+  border: none;
+
+  background: #fee2e2;
+
+  color: #dc2626;
+
+  padding: 11px 18px;
+
+  border-radius: 9px;
+
+  font-size: 14px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: 0.2s ease;
+}
+
+.delete-application-btn:hover {
+  background: #dc2626;
+
+  color: white;
+}
+
+/* EMPTY */
+
+.empty {
+  max-width: 600px;
+
+  margin: 60px auto;
+
+  background: white;
+
+  padding: 50px 30px;
+
+  text-align: center;
+
+  border-radius: 20px;
+
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+}
+
+.empty-icon {
+  font-size: 55px;
+
+  margin-bottom: 15px;
+}
+
+.empty h2 {
+  color: #111827;
+
+  margin-bottom: 10px;
+}
+
+.empty p {
+  color: #6b7280;
+
+  line-height: 1.6;
+}
+
+/* ERROR */
+
+.application-error {
+  max-width: 600px;
+
+  margin: 40px auto;
+
+  background: white;
+
+  padding: 40px;
+
+  border-radius: 18px;
+
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+
+  text-align: center;
+}
+
+.application-error h2 {
+  color: #dc2626;
+
+  margin-bottom: 10px;
+}
+
+.application-error p {
+  color: #6b7280;
+
+  margin-bottom: 20px;
+}
+
+.retry-btn {
+  border: none;
+
+  background: #2563eb;
+
+  color: white;
+
+  padding: 12px 22px;
+
+  border-radius: 9px;
+
+  cursor: pointer;
+
+  font-weight: 600;
+}
+
+.retry-btn:hover {
+  background: #1d4ed8;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 768px) {
+  .applications-page {
+    padding: 35px 20px;
+  }
+
+  .applications-header h1 {
+    font-size: 28px;
+  }
+
+  .application-top {
+    flex-direction: column;
+  }
+
+  .status {
+    align-self: flex-start;
+  }
+
+  .applications-grid {
+    grid-template-columns: 1fr;
+  }
+}

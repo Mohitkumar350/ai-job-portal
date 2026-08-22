@@ -1,0 +1,177 @@
+.dashboard {
+  min-height: 100vh;
+  background: #f5f7fb;
+  padding: 40px;
+}
+
+/* Header */
+
+.dashboard-header {
+  margin-bottom: 40px;
+}
+
+.dashboard-header h1 {
+  font-size: 36px;
+  color: #1e293b;
+  margin-bottom: 10px;
+}
+
+.dashboard-header p {
+  color: #64748b;
+  font-size: 17px;
+}
+
+/* Stats */
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 25px;
+  margin-bottom: 45px;
+}
+
+.stat-card {
+  background: white;
+  padding: 30px;
+  border-radius: 18px;
+  text-align: center;
+  box-shadow: 0 8px 20px rgba(0,0,0,.08);
+  transition: .3s;
+}
+
+.stat-card:hover {
+  transform: translateY(-8px);
+}
+
+.stat-icon {
+  font-size: 40px;
+  color: #2563eb;
+  margin-bottom: 15px;
+}
+
+.stat-card h2 {
+  font-size: 34px;
+  color: #1e293b;
+  margin-bottom: 10px;
+}
+
+.stat-card p {
+  color: #64748b;
+  font-size: 16px;
+}
+
+/* Quick Actions */
+
+.quick-actions {
+  margin-bottom: 45px;
+}
+
+.quick-actions h2 {
+  margin-bottom: 20px;
+  color: #1e293b;
+}
+
+.action-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px,1fr));
+  gap: 20px;
+}
+
+.action-btn {
+  text-decoration: none;
+  background: #2563eb;
+  color: white;
+  padding: 16px;
+  border-radius: 12px;
+  text-align: center;
+  font-weight: 600;
+  transition: .3s;
+}
+
+.action-btn:hover {
+  background: #1d4ed8;
+  transform: translateY(-3px);
+}
+
+/* Recent Activity */
+
+.recent-section h2 {
+  margin-bottom: 20px;
+  color: #1e293b;
+}
+
+.activity-card {
+  background: white;
+  padding: 30px;
+  border-radius: 18px;
+  box-shadow: 0 8px 20px rgba(0,0,0,.08);
+}
+
+.activity-card p {
+  padding: 12px 0;
+  border-bottom: 1px solid #e5e7eb;
+  color: #475569;
+  font-size: 16px;
+}
+
+.activity-card p:last-child {
+  border-bottom: none;
+}
+
+/* Responsive */
+
+@media (max-width: 992px) {
+  .dashboard {
+    padding: 30px 20px;
+  }
+
+  .dashboard-header h1 {
+    font-size: 30px;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-header {
+    text-align: center;
+  }
+
+  .dashboard-header h1 {
+    font-size: 26px;
+  }
+
+  .dashboard-header p {
+    font-size: 15px;
+  }
+
+  .stats-grid,
+  .action-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .stat-card,
+  .activity-card {
+    padding: 24px;
+  }
+
+  .action-btn {
+    padding: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard {
+    padding: 20px 15px;
+  }
+
+  .dashboard-header h1 {
+    font-size: 22px;
+  }
+
+  .stat-card h2 {
+    font-size: 28px;
+  }
+
+  .stat-icon {
+    font-size: 34px;
+  }
+}

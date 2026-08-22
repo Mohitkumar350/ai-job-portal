@@ -1,0 +1,17 @@
+$kind: http-request
+name: http://localhost:5000/api/auth/register
+description: ""
+url: http://localhost:5000/api/auth/register
+method: POST
+body:
+  type: json
+  content: "{\r\n    \"name\": \"Mohit\",\r\n    \"email\": \"mohit@gmail.com\",\r\n    \"password\": \"123456\"\r\n}"
+order: 1786784020427
+events:
+  - listen: test
+    script: |-
+      const response = JSON.parse(pm.response.text());
+
+      pm.environment.set("token", response.token);
+
+      console.log("JWT token saved successfully");

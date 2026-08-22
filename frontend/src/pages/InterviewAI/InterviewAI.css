@@ -1,0 +1,270 @@
+/* ==========================
+   Interview AI Page
+========================== */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.interview-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 20px;
+}
+
+.interview-card {
+  width: 100%;
+  max-width: 900px;
+  background: #fff;
+  border-radius: 20px;
+  padding: 35px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+.interview-card h1 {
+  text-align: center;
+  color: #2563eb;
+  margin-bottom: 30px;
+  font-size: 2rem;
+}
+
+/* ==========================
+   Form
+========================== */
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.form-group select {
+  width: 100%;
+  padding: 13px;
+  border-radius: 10px;
+  border: 1px solid #d1d5db;
+  font-size: 16px;
+  outline: none;
+}
+
+.form-group select:focus {
+  border-color: #2563eb;
+}
+
+/* ==========================
+   Button
+========================== */
+
+.primary-btn {
+  width: 100%;
+  padding: 15px;
+  margin-top: 15px;
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 17px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.primary-btn:hover:not(:disabled) {
+  background: #1d4ed8;
+  transform: translateY(-2px);
+}
+
+.primary-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ==========================
+   Progress
+========================== */
+
+.progress {
+  background: #dbeafe;
+  color: #1d4ed8;
+  padding: 12px;
+  border-radius: 10px;
+  text-align: center;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+/* ==========================
+   Question
+========================== */
+
+.question-box {
+  background: #eff6ff;
+  border-left: 6px solid #2563eb;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+}
+
+.question-box h2 {
+  color: #111827;
+  font-size: 22px;
+  line-height: 1.5;
+}
+
+/* ==========================
+   Answer
+========================== */
+
+textarea {
+  width: 100%;
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid #d1d5db;
+  resize: vertical;
+  font-size: 15px;
+  outline: none;
+  margin-bottom: 20px;
+}
+
+textarea:focus {
+  border-color: #2563eb;
+}
+
+/* ==========================
+   Feedback
+========================== */
+
+.feedback-card {
+  background: #f9fafb;
+  border-radius: 15px;
+  padding: 25px;
+  margin-top: 25px;
+  animation: fade 0.4s ease;
+}
+
+.feedback-card h2 {
+  color: #2563eb;
+  margin-bottom: 15px;
+}
+
+.feedback-card h3 {
+  color: #059669;
+  margin-bottom: 20px;
+}
+
+.feedback-card h4 {
+  margin-top: 18px;
+  margin-bottom: 10px;
+  color: #111827;
+}
+
+.feedback-card p {
+  color: #4b5563;
+  line-height: 1.7;
+}
+
+/* ==========================
+   Final Report
+========================== */
+
+.final-report {
+  margin-top: 30px;
+  padding: 30px;
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  border-radius: 18px;
+  color: white;
+  text-align: center;
+}
+
+.final-report h2 {
+  margin-bottom: 15px;
+}
+
+.final-report h3 {
+  font-size: 28px;
+  margin-bottom: 15px;
+}
+
+.final-report p {
+  margin-bottom: 20px;
+  line-height: 1.6;
+}
+
+/* ==========================
+   Animation
+========================== */
+
+@keyframes fade {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ==========================
+   Responsive
+========================== */
+
+@media (max-width: 768px) {
+  .interview-card {
+    padding: 20px;
+  }
+
+  .interview-card h1 {
+    font-size: 1.6rem;
+  }
+
+  .question-box h2 {
+    font-size: 18px;
+  }
+
+  .primary-btn {
+    font-size: 15px;
+  }
+}
+.score-box {
+  background: #2563eb;
+  color: white;
+  padding: 12px;
+  border-radius: 10px;
+  font-size: 18px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.section {
+  margin-top: 20px;
+}
+
+.section h3 {
+  color: #2563eb;
+  margin-bottom: 10px;
+}
+
+.section ul {
+  padding-left: 20px;
+}
+
+.section li {
+  margin-bottom: 8px;
+  line-height: 1.6;
+}
+
+.section p {
+  line-height: 1.7;
+  color: #444;
+}

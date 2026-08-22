@@ -1,0 +1,15 @@
+$kind: http-request
+name: Login
+description: Login with email and password. Saves JWT token to environment automatically.
+url: http://localhost:5000/api/screening/message
+method: POST
+body:
+  type: json
+  content: " {\r
+
+    \  \"screeningId\": \"3ff19f22-5957-4461-8c4b-8f99656ceaed\",\r
+
+    \  \"message\": \"I have been feeling tired and having a mild headache.\"\r
+
+    }"
+order: 975748085503809

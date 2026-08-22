@@ -1,0 +1,100 @@
+.notification-wrapper {
+  position: relative;
+}
+.notification-bell {
+  position: relative;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font-size: 20px;
+  line-height: 1;
+  padding: 8px;
+  cursor: pointer;
+}
+.notification-count {
+  position: absolute;
+  top: 0;
+  right: 0;
+  min-width: 17px;
+  height: 17px;
+  padding: 0 3px;
+  border-radius: 999px;
+  background: #dc2626;
+  color: #fff;
+  font-size: 10px;
+  line-height: 17px;
+  text-align: center;
+}
+.notification-dropdown {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + 10px);
+  right: 0;
+  width: min(360px, calc(100vw - 32px));
+  padding: 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 14px 35px rgba(15, 23, 42, 0.16);
+  color: #172033;
+}
+.notification-dropdown-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  padding: 4px 4px 10px;
+  border-bottom: 1px solid #e2e8f0;
+}
+.notification-dropdown-header button,
+.notification-view-all {
+  border: 0;
+  background: transparent;
+  color: #2563eb;
+  font-size: 12px;
+  cursor: pointer;
+}
+.notification-dropdown-header button:disabled {
+  color: #94a3b8;
+  cursor: not-allowed;
+}
+.notification-item {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px 8px;
+  border: 0;
+  border-bottom: 1px solid #f1f5f9;
+  background: #fff;
+  text-align: left;
+  cursor: pointer;
+}
+.notification-item.unread {
+  background: #eff6ff;
+}
+.notification-item strong,
+.notification-item small {
+  display: block;
+}
+.notification-item small {
+  margin-top: 4px;
+  color: #64748b;
+  line-height: 1.35;
+}
+.notification-item time {
+  flex: none;
+  color: #94a3b8;
+  font-size: 11px;
+}
+.notification-empty {
+  padding: 18px 4px;
+  color: #64748b;
+}
+.notification-view-all {
+  display: block;
+  width: 100%;
+  padding: 10px 4px;
+  text-align: center;
+  font-weight: 600;
+}

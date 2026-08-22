@@ -1,0 +1,255 @@
+.jobs-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+.jobs-toolbar select {
+  height: 42px;
+  padding: 0 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: #fff;
+}
+.active-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 14px 0;
+}
+.active-filters button {
+  border: 1px solid #bfdbfe;
+  border-radius: 999px;
+  padding: 6px 10px;
+  background: #eff6ff;
+  color: #1d4ed8;
+  cursor: pointer;
+}
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  margin: 30px 0;
+}
+.pagination button,
+.no-jobs button {
+  border: 0;
+  border-radius: 8px;
+  padding: 10px 14px;
+  background: #2563eb;
+  color: #fff;
+  cursor: pointer;
+}
+.pagination button:disabled {
+  background: #cbd5e1;
+  cursor: not-allowed;
+}
+.job-skeleton {
+  min-height: 330px;
+  border-radius: 12px;
+  background: linear-gradient(90deg, #f1f5f9, #e2e8f0, #f1f5f9);
+  background-size: 200% 100%;
+  animation: job-loading 1.2s infinite;
+}
+@keyframes job-loading {
+  to {
+    background-position: -200% 0;
+  }
+}
+@media (max-width: 650px) {
+  .jobs-toolbar {
+    display: block;
+  }
+  .jobs-toolbar select {
+    width: 100%;
+    margin-top: 10px;
+  }
+  .pagination {
+    gap: 8px;
+  }
+}
+/* =========================================
+   JOBS PAGE
+========================================= */
+
+.jobs-page {
+  width: 90%;
+  max-width: 1300px;
+
+  margin: 50px auto;
+
+  padding: 0 20px;
+
+  box-sizing: border-box;
+}
+
+/* =========================================
+   HEADER
+========================================= */
+
+.jobs-header {
+  text-align: center;
+  margin-bottom: 35px;
+}
+
+.jobs-header h1 {
+  font-size: 42px;
+  font-weight: 700;
+  color: #1e293b;
+
+  margin: 0;
+}
+
+.jobs-header p {
+  margin-top: 12px;
+
+  color: #64748b;
+
+  font-size: 16px;
+}
+
+/* =========================================
+   JOB COUNT
+========================================= */
+
+.job-count {
+  margin: 30px 0 25px;
+
+  color: #2563eb;
+
+  font-size: 18px;
+  font-weight: 600;
+}
+
+/* =========================================
+   JOB GRID
+========================================= */
+
+.jobs-grid {
+  display: grid;
+
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+
+  gap: 25px;
+
+  width: 100%;
+}
+
+/* =========================================
+   NO JOBS
+========================================= */
+
+.no-jobs {
+  width: 100%;
+
+  text-align: center;
+
+  padding: 80px 20px;
+
+  background: #ffffff;
+
+  border-radius: 16px;
+
+  border: 1px solid #e2e8f0;
+
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.06);
+
+  box-sizing: border-box;
+}
+
+.no-jobs h2 {
+  color: #1e293b;
+
+  margin-bottom: 10px;
+}
+
+.no-jobs p {
+  color: #64748b;
+
+  margin: 0;
+}
+
+/* =========================================
+   RESPONSIVE - TABLET
+========================================= */
+
+@media (max-width: 900px) {
+  .jobs-page {
+    width: 92%;
+
+    margin: 40px auto;
+
+    padding: 0 15px;
+  }
+
+  .jobs-header h1 {
+    font-size: 36px;
+  }
+
+  .jobs-grid {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+
+    gap: 20px;
+  }
+}
+
+/* =========================================
+   RESPONSIVE - MOBILE
+========================================= */
+
+@media (max-width: 600px) {
+  .jobs-page {
+    width: 94%;
+
+    margin: 30px auto;
+
+    padding: 0 10px;
+  }
+
+  .jobs-header {
+    margin-bottom: 25px;
+  }
+
+  .jobs-header h1 {
+    font-size: 30px;
+  }
+
+  .jobs-header p {
+    font-size: 14px;
+
+    line-height: 1.6;
+  }
+
+  .job-count {
+    margin: 25px 0 20px;
+
+    font-size: 16px;
+  }
+
+  .jobs-grid {
+    grid-template-columns: 1fr;
+
+    gap: 18px;
+  }
+
+  .no-jobs {
+    padding: 60px 15px;
+  }
+}
+
+/* =========================================
+   SMALL MOBILE
+========================================= */
+
+@media (max-width: 400px) {
+  .jobs-page {
+    width: 92%;
+
+    padding: 0 8px;
+  }
+
+  .jobs-header h1 {
+    font-size: 26px;
+  }
+}
