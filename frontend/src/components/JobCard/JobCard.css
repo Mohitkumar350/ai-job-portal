@@ -1,15 +1,53 @@
+/* =========================
+   JOB CARD
+========================= */
+
 .job-card {
   position: relative;
   display: flex;
   flex-direction: column;
-  min-height: 0;
+
+  width: 100%;
+  height: 430px;
+  min-height: 430px;
+  align-self: stretch;
+
   box-sizing: border-box;
   padding: 20px;
+
   background: #ffffff;
   border: 1px solid #e2e8f0;
   border-radius: 16px;
+
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+/* Keep every API logo in the same visual box. */
+.job-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 64px;
+  height: 64px;
+  flex: 0 0 64px;
+  margin-bottom: 14px;
+
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background: #f8fafc;
+}
+
+.job-logo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 .job-card:hover {
@@ -17,22 +55,33 @@
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
 }
 
+/* =========================
+   SAVE BUTTON
+========================= */
+
 .save-btn {
   position: absolute;
   top: 18px;
   right: 18px;
   z-index: 5;
+
   display: flex;
   align-items: center;
   justify-content: center;
+
   width: 42px;
   height: 42px;
+
   border: none;
   border-radius: 50%;
+
   background: #f1f5f9;
   color: #94a3b8;
+
   font-size: 20px;
+
   cursor: pointer;
+
   transition: all 0.25s ease;
 }
 
@@ -51,89 +100,197 @@
   color: #dc2626;
 }
 
+/* =========================
+   JOB TITLE
+========================= */
+
 .job-card h2 {
   margin: 0 48px 6px 0;
+  display: -webkit-box;
+  overflow: hidden;
+
   color: #1e293b;
+
   font-size: 20px;
   line-height: 1.3;
+  -webkit-box-orient: vertical;
+  line-clamp: 2;
+  -webkit-line-clamp: 2;
 }
+
+/* =========================
+   COMPANY
+========================= */
 
 .job-card h3 {
   margin: 0 0 14px;
+  overflow: hidden;
+
   color: #2563eb;
+
   font-size: 15px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
+
+/* =========================
+   JOB INFORMATION
+========================= */
 
 .job-card p {
   margin: 6px 0;
+
   color: #64748b;
+
   font-size: 13px;
   line-height: 1.35;
+
   overflow-wrap: anywhere;
 }
+
+/* =========================
+   SKILLS
+========================= */
 
 .skills {
   display: flex;
   flex-wrap: wrap;
+  max-height: 52px;
+  overflow: hidden;
+
   gap: 6px;
+
   margin: 14px 0 16px;
 }
 
 .skills span {
   padding: 5px 8px;
+
   border-radius: 8px;
+
   background: #eff6ff;
   color: #2563eb;
+
   font-size: 12px;
   font-weight: 500;
 }
 
+/* =========================
+   JOB ACTIONS
+========================= */
+
 .job-actions {
   display: flex;
   gap: 10px;
+
   margin-top: auto;
+
   padding-top: 4px;
 }
+
+/* =========================
+   BUTTONS
+========================= */
 
 .details-btn,
 .apply-btn {
   flex: 1;
+
   padding: 11px 12px;
+
   border-radius: 9px;
+
   text-align: center;
+
   font-size: 14px;
   font-weight: 600;
+
   cursor: pointer;
+
   transition: all 0.25s ease;
 }
 
+/* Details */
+
 .details-btn {
   border: 1px solid #cbd5e1;
+
   background: #f1f5f9;
   color: #334155;
+
   text-decoration: none;
 }
 
 .details-btn:hover {
   background: #e2e8f0;
+
   transform: translateY(-2px);
 }
 
+/* Apply */
+
 .apply-btn {
   border: 1px solid #2563eb;
+
   background: #2563eb;
   color: #ffffff;
 }
 
 .apply-btn:hover {
   border-color: #1d4ed8;
+
   background: #1d4ed8;
+
   transform: translateY(-2px);
+
   box-shadow: 0 5px 15px rgba(37, 99, 235, 0.25);
 }
 
+/* =========================
+   JOB GRID
+========================= */
+
+/*
+  IMPORTANT:
+  Add this to the container
+  that contains all JobCards.
+*/
+
+.jobs-grid {
+  display: grid;
+
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+
+  align-items: start;
+
+  gap: 20px;
+}
+
+/* =========================
+   TABLET
+========================= */
+
+@media (max-width: 900px) {
+  .jobs-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* =========================
+   MOBILE
+========================= */
+
 @media (max-width: 600px) {
+  .jobs-grid {
+    grid-template-columns: 1fr;
+
+    gap: 16px;
+  }
+
   .job-card {
+    width: 100%;
+    height: 430px;
+    min-height: 430px;
     padding: 18px;
   }
 
@@ -143,6 +300,8 @@
 
   .job-actions {
     flex-direction: column;
+
+    margin-top: 16px;
   }
 
   .details-btn,
