@@ -1,4 +1,3 @@
-
 const API_URL = `${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/admin`;
 
 // ==========================================
@@ -27,9 +26,7 @@ export const getAllUsers = async () => {
   console.log("GET USERS RESPONSE:", data);
 
   if (!response.ok) {
-    throw new Error(
-      data.message || "Failed to fetch users"
-    );
+    throw new Error(data.message || "Failed to fetch users");
   }
 
   return data;
@@ -46,17 +43,14 @@ export const deleteUser = async (id) => {
     throw new Error("Please login first.");
   }
 
-  const response = await fetch(
-    `${API_URL}/users/${id}`,
-    {
-      method: "DELETE",
+  const response = await fetch(`${API_URL}/users/${id}`, {
+    method: "DELETE",
 
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    }
-  );
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+  });
 
   const data = await response.json();
 
@@ -64,9 +58,7 @@ export const deleteUser = async (id) => {
   console.log("DELETE USER RESPONSE:", data);
 
   if (!response.ok) {
-    throw new Error(
-      data.message || "Failed to delete user"
-    );
+    throw new Error(data.message || "Failed to delete user");
   }
 
   return data;
@@ -83,17 +75,14 @@ export const getAdminStats = async () => {
     throw new Error("Please login first.");
   }
 
-  const response = await fetch(
-    `${API_URL}/stats`,
-    {
-      method: "GET",
+  const response = await fetch(`${API_URL}/stats`, {
+    method: "GET",
 
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    }
-  );
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+  });
 
   const data = await response.json();
 
@@ -101,9 +90,7 @@ export const getAdminStats = async () => {
   console.log("ADMIN STATS RESPONSE:", data);
 
   if (!response.ok) {
-    throw new Error(
-      data.message || "Failed to fetch admin statistics"
-    );
+    throw new Error(data.message || "Failed to fetch admin statistics");
   }
 
   return data;

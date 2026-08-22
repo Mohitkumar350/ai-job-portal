@@ -9,7 +9,9 @@ const serviceAccountPath = path.join(
 );
 
 if (!admin.getApps().length) {
-  const serviceAccount = require(serviceAccountPath);
+  const serviceAccount = process.env.FIREBASE_SERVICE_ACCOUNT_JSON
+    ? JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_JSON)
+    : require(serviceAccountPath);
 
   admin.initializeApp({
     credential: admin.cert(serviceAccount),

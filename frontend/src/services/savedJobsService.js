@@ -1,4 +1,4 @@
- const API_URL = `${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/saved-jobs`;
+const API_URL = `${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/saved-jobs`;
 
 /* =========================
    GET SAVED JOBS
@@ -22,9 +22,7 @@ export async function getSavedJobs() {
   const data = await response.json();
 
   if (!response.ok) {
-    throw new Error(
-      data.message || "Failed to get saved jobs"
-    );
+    throw new Error(data.message || "Failed to get saved jobs");
   }
 
   return data;
@@ -69,9 +67,7 @@ export async function saveJob(job) {
   const data = await response.json();
 
   if (!response.ok) {
-    throw new Error(
-      data.message || "Failed to save job"
-    );
+    throw new Error(data.message || "Failed to save job");
   }
 
   return data;
@@ -88,24 +84,18 @@ export async function removeJob(jobId) {
     throw new Error("Please login first.");
   }
 
-  const response = await fetch(
-    `${API_URL}/${jobId}`,
-    {
-      method: "DELETE",
+  const response = await fetch(`${API_URL}/${jobId}`, {
+    method: "DELETE",
 
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 
   const data = await response.json();
 
   if (!response.ok) {
-    throw new Error(
-      data.message ||
-        "Failed to remove saved job"
-    );
+    throw new Error(data.message || "Failed to remove saved job");
   }
 
   return data;

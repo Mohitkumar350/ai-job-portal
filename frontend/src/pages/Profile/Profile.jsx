@@ -39,11 +39,12 @@ function Profile() {
       const response = await fetch(
         `${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/user/profile`,
         {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         },
-      });
+      );
 
       const data = await response.json();
 
@@ -160,22 +161,23 @@ function Profile() {
       const response = await fetch(
         `${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/user/profile`,
         {
-        method: "PUT",
+          method: "PUT",
 
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+
+          body: JSON.stringify({
+            name: userData.name.trim(),
+            phone: userData.phone.trim(),
+            location: userData.location.trim(),
+            bio: userData.bio.trim(),
+            resumeURL: userData.resumeURL.trim(),
+            photoURL: userData.photoURL.trim(),
+          }),
         },
-
-        body: JSON.stringify({
-          name: userData.name.trim(),
-          phone: userData.phone.trim(),
-          location: userData.location.trim(),
-          bio: userData.bio.trim(),
-          resumeURL: userData.resumeURL.trim(),
-          photoURL: userData.photoURL.trim(),
-        }),
-      });
+      );
 
       const data = await response.json();
 
