@@ -1,5 +1,8 @@
 ﻿# MohiJobs
+## 🌐 Live Demo
 
+- **Frontend:** https://ai-job-portal-ehk1-two.vercel.app/
+- **Backend API:** https://ai-job-portal-backend-hv62.onrender.com
 AI-Powered Job & Recruitment Platform
 
 A production-ready, full-stack recruitment platform connecting job seekers with employers, powered by AI resume analysis, interactive AI mock technical interviews, and deterministic weighted AI job recommendations.
