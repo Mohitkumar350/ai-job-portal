@@ -1,17 +1,22 @@
  .search-bar {
   width: 100%;
   margin: 30px 0;
+  box-sizing: border-box;
 }
 
 .search-input {
+  width: 100%;
+  min-height: 60px;
   display: flex;
   align-items: center;
+  box-sizing: border-box;
+
   background: #fff;
   border: 2px solid #e5e7eb;
   border-radius: 12px;
   padding: 0 18px;
-  height: 60px;
-  transition: 0.3s;
+
+  transition: 0.3s ease;
 }
 
 .search-input:hover {
@@ -24,6 +29,7 @@
 }
 
 .search-icon {
+  flex-shrink: 0;
   font-size: 18px;
   color: #64748b;
   margin-right: 12px;
@@ -31,12 +37,70 @@
 
 .search-input input {
   width: 100%;
+  min-width: 0;
+
   border: none;
   outline: none;
-  font-size: 16px;
   background: transparent;
+
+  font-size: 16px;
+  color: #0f172a;
 }
 
 .search-input input::placeholder {
   color: #94a3b8;
+}
+
+/* =========================================
+   TABLET
+========================================= */
+
+@media (max-width: 768px) {
+  .search-bar {
+    margin: 22px 0;
+  }
+
+  .search-input {
+    min-height: 54px;
+    padding: 0 15px;
+    border-radius: 10px;
+  }
+
+  .search-icon {
+    font-size: 16px;
+    margin-right: 10px;
+  }
+
+  .search-input input {
+    font-size: 14px;
+  }
+}
+
+/* =========================================
+   SMALL MOBILE
+========================================= */
+
+@media (max-width: 480px) {
+  .search-bar {
+    margin: 18px 0;
+  }
+
+  .search-input {
+    min-height: 50px;
+    padding: 0 12px;
+    border-radius: 9px;
+  }
+
+  .search-icon {
+    font-size: 15px;
+    margin-right: 8px;
+  }
+
+  .search-input input {
+    font-size: 13px;
+  }
+
+  .search-input input::placeholder {
+    font-size: 12px;
+  }
 }

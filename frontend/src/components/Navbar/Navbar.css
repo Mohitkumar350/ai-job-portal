@@ -20,10 +20,10 @@
   max-width: 1400px;
   min-height: 72px;
   margin: 0 auto;
-  padding: 0 20px;
+  padding: 0 28px;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 25px;
   box-sizing: border-box;
 }
 
@@ -37,7 +37,6 @@
   font-size: 22px;
   font-weight: 800;
   white-space: nowrap;
-  flex-shrink: 0;
   transition: 0.2s ease;
 }
 
@@ -52,11 +51,9 @@
 .navbar-links {
   display: flex;
   align-items: center;
-  gap: 3px;
+  gap: 5px;
   flex: 1;
-  min-width: 0;
   overflow-x: auto;
-  scrollbar-width: none;
 }
 
 .navbar-links::-webkit-scrollbar {
@@ -66,12 +63,11 @@
 .nav-link {
   text-decoration: none;
   color: #475569;
-  padding: 9px 10px;
+  padding: 9px 11px;
   border-radius: 8px;
   font-size: 14px;
   font-weight: 600;
   white-space: nowrap;
-  flex-shrink: 0;
   transition: all 0.2s ease;
 }
 
@@ -118,19 +114,26 @@
 }
 
 /* =====================================================
+   EMPLOYER NAVBAR
+===================================================== */
+
+.employer-navbar {
+  background: #ffffff;
+}
+
+/* =====================================================
    RIGHT SIDE
 ===================================================== */
 
 .navbar-right {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   white-space: nowrap;
-  flex-shrink: 0;
 }
 
 /* =====================================================
-   USERNAME
+   USER INFO
 ===================================================== */
 
 .navbar-username {
@@ -177,7 +180,6 @@
   font-size: 14px;
   font-weight: 700;
   cursor: pointer;
-  white-space: nowrap;
   transition: all 0.2s ease;
 }
 
@@ -220,7 +222,6 @@
   border-radius: 8px;
   font-size: 14px;
   font-weight: 700;
-  white-space: nowrap;
   transition: 0.2s ease;
 }
 
@@ -230,17 +231,29 @@
 }
 
 /* =====================================================
+   MOBILE HAMBURGER
+===================================================== */
+
+.mobile-menu-button {
+  display: none;
+  border: none;
+  background: transparent;
+  color: #1e293b;
+  font-size: 25px;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 5px;
+  line-height: 1;
+}
+
+/* =====================================================
    TABLET
 ===================================================== */
 
 @media (max-width: 1100px) {
   .navbar-container {
-    padding: 0 16px;
-    gap: 10px;
-  }
-
-  .navbar-logo {
-    font-size: 20px;
+    padding: 0 18px;
+    gap: 15px;
   }
 
   .nav-link {
@@ -249,11 +262,7 @@
   }
 
   .navbar-username {
-    max-width: 100px;
-  }
-
-  .navbar-logout {
-    padding: 8px 12px;
+    max-width: 110px;
   }
 }
 
@@ -263,71 +272,109 @@
 
 @media (max-width: 768px) {
   .navbar-container {
-    min-height: auto;
-    padding: 12px 15px;
-    flex-wrap: wrap;
+    position: relative;
+    min-height: 64px;
+    padding: 11px 15px;
     gap: 10px;
   }
 
-  .navbar-logo {
-    font-size: 19px;
-  }
+  /* Hamburger */
 
-  .navbar-right {
+  .mobile-menu-button {
+    display: block;
     margin-left: auto;
-    gap: 7px;
   }
 
-  /* Navigation becomes separate scrollable row */
+  /* Hide desktop navigation */
+
   .navbar-links {
-    width: 100%;
-    flex: none;
-    order: 3;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    overflow-x: auto;
-    gap: 5px;
-    padding: 5px 0 8px;
-    scrollbar-width: none;
-  }
-
-  .navbar-links::-webkit-scrollbar {
     display: none;
   }
 
-  .nav-link {
-    flex-shrink: 0;
-    font-size: 13px;
-    padding: 8px 11px;
+  /* Open mobile menu */
+
+  .navbar-links.mobile-menu-open {
+    display: flex;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+
+    width: 100%;
+
+    background: #ffffff;
+
+    border-top: 1px solid #e5e7eb;
+    border-bottom: 1px solid #e5e7eb;
+
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+
+    padding: 10px;
+
+    flex-direction: column;
+    align-items: stretch;
+
+    gap: 4px;
+
+    z-index: 999;
+
+    box-sizing: border-box;
+
+    overflow-y: auto;
+    max-height: calc(100vh - 64px);
   }
+
+  /* Mobile links */
+
+  .navbar-links.mobile-menu-open .nav-link {
+    width: 100%;
+    box-sizing: border-box;
+
+    padding: 12px 14px;
+
+    font-size: 14px;
+
+    border-radius: 8px;
+  }
+
+  .navbar-links.mobile-menu-open .nav-link:hover,
+  .navbar-links.mobile-menu-open .nav-link.active {
+    background: #eff6ff;
+    color: #2563eb;
+  }
+
+  /* Right side */
+
+  .navbar-right {
+    margin-left: 0;
+    gap: 8px;
+  }
+
+  /* Hide username on mobile */
 
   .navbar-username {
-    max-width: 90px;
-    font-size: 12px;
+    display: none;
   }
+
+  /* Logout */
 
   .navbar-logout {
-    padding: 8px 12px;
-    font-size: 12px;
-  }
-
-  .navbar-login,
-  .navbar-signup {
     padding: 8px 11px;
     font-size: 12px;
   }
 
-  /* Admin mobile */
-  .admin-links {
-    order: 3;
-    width: auto;
-    flex: 1;
-    justify-content: center;
-  }
+  /* Admin */
 
   .admin-user-info {
     display: none;
+  }
+
+  .admin-links {
+    justify-content: stretch;
+  }
+
+  .admin-nav-link {
+    width: 100%;
   }
 }
 
@@ -337,62 +384,35 @@
 
 @media (max-width: 480px) {
   .navbar-container {
-    padding: 11px 12px;
-    gap: 8px;
+    min-height: 60px;
+    padding: 10px 12px;
   }
 
   .navbar-logo {
     font-size: 18px;
   }
 
+  .mobile-menu-button {
+    font-size: 23px;
+  }
+
+  .navbar-login,
+  .navbar-signup,
+  .navbar-logout {
+    padding: 8px 9px;
+    font-size: 11px;
+  }
+
   .navbar-right {
-    gap: 5px;
+    gap: 6px;
   }
 
-  .nav-link {
-    font-size: 12px;
-    padding: 8px 10px;
+  .navbar-links.mobile-menu-open {
+    max-height: calc(100vh - 60px);
   }
 
-  .navbar-username {
-    display: none;
-  }
-
-  .navbar-login,
-  .navbar-signup,
-  .navbar-logout {
-    padding: 8px 10px;
-    font-size: 12px;
-  }
-
-  .navbar-links {
-    gap: 4px;
-    padding-bottom: 7px;
-  }
-}
-
-/* =====================================================
-   VERY SMALL MOBILE
-===================================================== */
-
-@media (max-width: 360px) {
-  .navbar-container {
-    padding: 10px;
-  }
-
-  .navbar-logo {
-    font-size: 17px;
-  }
-
-  .navbar-login,
-  .navbar-signup,
-  .navbar-logout {
-    padding: 7px 8px;
-    font-size: 11px;
-  }
-
-  .nav-link {
-    font-size: 11px;
-    padding: 7px 9px;
+  .navbar-links.mobile-menu-open .nav-link {
+    padding: 11px 12px;
+    font-size: 13px;
   }
 }

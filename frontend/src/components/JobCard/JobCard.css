@@ -1,18 +1,16 @@
-/* =========================
+/* =====================================================
    JOB CARD
-========================= */
+===================================================== */
 
 .job-card {
   position: relative;
   display: flex;
   flex-direction: column;
-
   width: 100%;
-  height: 430px;
+  min-width: 0;
   min-height: 430px;
-  align-self: stretch;
-
   box-sizing: border-box;
+
   padding: 20px;
 
   background: #ffffff;
@@ -26,7 +24,18 @@
     box-shadow 0.25s ease;
 }
 
-/* Keep every API logo in the same visual box. */
+/* Hover only on devices that support hover */
+@media (hover: hover) {
+  .job-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+  }
+}
+
+/* =====================================================
+   JOB LOGO
+===================================================== */
+
 .job-logo {
   display: flex;
   align-items: center;
@@ -35,11 +44,14 @@
   width: 64px;
   height: 64px;
   flex: 0 0 64px;
+
   margin-bottom: 14px;
 
   overflow: hidden;
+
   border: 1px solid #e2e8f0;
   border-radius: 10px;
+
   background: #f8fafc;
 }
 
@@ -47,17 +59,13 @@
   display: block;
   width: 100%;
   height: 100%;
+
   object-fit: contain;
 }
 
-.job-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
-}
-
-/* =========================
+/* =====================================================
    SAVE BUTTON
-========================= */
+===================================================== */
 
 .save-btn {
   position: absolute;
@@ -92,7 +100,7 @@
 }
 
 .save-btn:hover {
-  transform: scale(1.1);
+  transform: scale(1.08);
 }
 
 .save-btn.saved:hover {
@@ -100,42 +108,58 @@
   color: #dc2626;
 }
 
-/* =========================
+/* =====================================================
    JOB TITLE
-========================= */
+===================================================== */
 
 .job-card h2 {
   margin: 0 48px 6px 0;
+
   display: -webkit-box;
+
   overflow: hidden;
 
   color: #1e293b;
 
   font-size: 20px;
   line-height: 1.3;
+  font-weight: 700;
+
   -webkit-box-orient: vertical;
-  line-clamp: 2;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
 }
 
-/* =========================
+/* =====================================================
    COMPANY
-========================= */
+===================================================== */
 
 .job-card h3 {
   margin: 0 0 14px;
+
   overflow: hidden;
 
   color: #2563eb;
 
   font-size: 15px;
+  font-weight: 600;
+
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-/* =========================
+.job-card h3 a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.job-card h3 a:hover {
+  text-decoration: underline;
+}
+
+/* =====================================================
    JOB INFORMATION
-========================= */
+===================================================== */
 
 .job-card p {
   margin: 6px 0;
@@ -143,27 +167,34 @@
   color: #64748b;
 
   font-size: 13px;
-  line-height: 1.35;
+  line-height: 1.4;
 
   overflow-wrap: anywhere;
 }
 
-/* =========================
+/* =====================================================
    SKILLS
-========================= */
+===================================================== */
 
 .skills {
   display: flex;
   flex-wrap: wrap;
-  max-height: 52px;
-  overflow: hidden;
 
   gap: 6px;
+
+  max-height: 52px;
+
+  overflow: hidden;
 
   margin: 14px 0 16px;
 }
 
 .skills span {
+  display: inline-flex;
+  align-items: center;
+
+  max-width: 100%;
+
   padding: 5px 8px;
 
   border-radius: 8px;
@@ -173,28 +204,34 @@
 
   font-size: 12px;
   font-weight: 500;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-/* =========================
+/* =====================================================
    JOB ACTIONS
-========================= */
+===================================================== */
 
 .job-actions {
   display: flex;
+
   gap: 10px;
 
   margin-top: auto;
-
   padding-top: 4px;
 }
 
-/* =========================
+/* =====================================================
    BUTTONS
-========================= */
+===================================================== */
 
 .details-btn,
 .apply-btn {
   flex: 1;
+
+  min-width: 0;
 
   padding: 11px 12px;
 
@@ -208,14 +245,19 @@
   cursor: pointer;
 
   transition: all 0.25s ease;
+
+  box-sizing: border-box;
 }
 
-/* Details */
+/* =====================================================
+   VIEW DETAILS
+===================================================== */
 
 .details-btn {
   border: 1px solid #cbd5e1;
 
   background: #f1f5f9;
+
   color: #334155;
 
   text-decoration: none;
@@ -223,16 +265,18 @@
 
 .details-btn:hover {
   background: #e2e8f0;
-
   transform: translateY(-2px);
 }
 
-/* Apply */
+/* =====================================================
+   APPLY
+===================================================== */
 
 .apply-btn {
   border: 1px solid #2563eb;
 
   background: #2563eb;
+
   color: #ffffff;
 }
 
@@ -246,51 +290,13 @@
   box-shadow: 0 5px 15px rgba(37, 99, 235, 0.25);
 }
 
-/* =========================
-   JOB GRID
-========================= */
-
-/*
-  IMPORTANT:
-  Add this to the container
-  that contains all JobCards.
-*/
-
-.jobs-grid {
-  display: grid;
-
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-
-  align-items: start;
-
-  gap: 20px;
-}
-
-/* =========================
+/* =====================================================
    TABLET
-========================= */
+===================================================== */
 
 @media (max-width: 900px) {
-  .jobs-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-/* =========================
-   MOBILE
-========================= */
-
-@media (max-width: 600px) {
-  .jobs-grid {
-    grid-template-columns: 1fr;
-
-    gap: 16px;
-  }
-
   .job-card {
-    width: 100%;
-    height: 430px;
-    min-height: 430px;
+    min-height: 420px;
     padding: 18px;
   }
 
@@ -298,15 +304,162 @@
     font-size: 19px;
   }
 
+  .job-card p {
+    font-size: 13px;
+  }
+}
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 600px) {
+  .job-card {
+    width: 100%;
+
+    min-height: 0;
+    height: auto;
+
+    padding: 18px;
+
+    border-radius: 14px;
+  }
+
+  .job-logo {
+    width: 58px;
+    height: 58px;
+    flex-basis: 58px;
+
+    margin-bottom: 12px;
+  }
+
+  .save-btn {
+    top: 15px;
+    right: 15px;
+
+    width: 40px;
+    height: 40px;
+
+    font-size: 18px;
+  }
+
+  .job-card h2 {
+    margin-right: 45px;
+
+    font-size: 18px;
+    line-height: 1.35;
+  }
+
+  .job-card h3 {
+    margin-bottom: 12px;
+
+    font-size: 14px;
+  }
+
+  .job-card p {
+    margin: 6px 0;
+
+    font-size: 13px;
+  }
+
+  .skills {
+    max-height: 60px;
+
+    margin-top: 12px;
+    margin-bottom: 16px;
+  }
+
+  .skills span {
+    font-size: 11px;
+    padding: 5px 7px;
+  }
+
+  /* Buttons vertically stacked */
   .job-actions {
     flex-direction: column;
 
-    margin-top: 16px;
+    gap: 9px;
+
+    margin-top: 12px;
   }
 
   .details-btn,
   .apply-btn {
     width: 100%;
-    box-sizing: border-box;
+
+    min-height: 44px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 14px;
+  }
+}
+
+/* =====================================================
+   SMALL MOBILE
+===================================================== */
+
+@media (max-width: 380px) {
+  .job-card {
+    padding: 15px;
+  }
+
+  .job-logo {
+    width: 54px;
+    height: 54px;
+    flex-basis: 54px;
+  }
+
+  .save-btn {
+    width: 37px;
+    height: 37px;
+
+    top: 13px;
+    right: 13px;
+
+    font-size: 16px;
+  }
+
+  .job-card h2 {
+    font-size: 17px;
+  }
+
+  .job-card h3 {
+    font-size: 13px;
+  }
+
+  .job-card p {
+    font-size: 12px;
+  }
+
+  .skills span {
+    font-size: 10px;
+  }
+
+  .details-btn,
+  .apply-btn {
+    min-height: 42px;
+
+    font-size: 13px;
+  }
+}
+
+/* =====================================================
+   VERY SMALL DEVICES
+===================================================== */
+
+@media (max-width: 320px) {
+  .job-card {
+    padding: 13px;
+  }
+
+  .job-card h2 {
+    font-size: 16px;
+  }
+
+  .job-actions {
+    gap: 8px;
   }
 }

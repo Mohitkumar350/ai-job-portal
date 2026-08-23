@@ -1,75 +1,144 @@
 .filter-bar {
+  width: 100%;
   display: flex;
   gap: 20px;
   flex-wrap: wrap;
   margin: 30px 0;
+  box-sizing: border-box;
 }
 
 .filter-controls {
+  width: 100%;
   display: flex;
-  gap: 20px;
+  gap: 15px;
   flex: 1;
   flex-wrap: wrap;
 }
+
 .filter-toggle {
   display: none;
 }
 
-.filter-bar select {
+/* =========================================
+   INPUTS & SELECTS
+========================================= */
+
+.filter-bar select,
+.filter-bar input {
   flex: 1;
-  min-width: 180px;
+  min-width: 150px;
   height: 50px;
+  box-sizing: border-box;
+
   border: 2px solid #e5e7eb;
   border-radius: 10px;
   padding: 0 15px;
-  font-size: 15px;
-  background: white;
+
+  font-size: 14px;
+  background: #fff;
+  color: #334155;
+
   outline: none;
   cursor: pointer;
-  transition: 0.3s;
+  transition: 0.2s ease;
 }
 
 .filter-bar select:hover,
-.filter-bar select:focus {
+.filter-bar select:focus,
+.filter-bar input:hover,
+.filter-bar input:focus {
   border-color: #2563eb;
 }
 
+.filter-bar input::placeholder {
+  color: #94a3b8;
+}
+
+/* =========================================
+   CLEAR FILTER BUTTON
+========================================= */
+
 .filter-bar button {
   height: 50px;
-  padding: 0 25px;
+  padding: 0 22px;
+
   background: #2563eb;
-  color: white;
+  color: #fff;
+
   border: none;
   border-radius: 10px;
+
   cursor: pointer;
-  font-size: 15px;
-  transition: 0.3s;
+  font-size: 14px;
+  font-weight: 600;
+
+  transition: 0.2s ease;
 }
 
 .filter-bar button:hover {
   background: #1d4ed8;
 }
 
+/* =========================================
+   TABLET
+========================================= */
+
+@media (max-width: 1000px) {
+  .filter-controls {
+    gap: 12px;
+  }
+
+  .filter-bar select,
+  .filter-bar input {
+    min-width: calc(50% - 6px);
+  }
+
+  .filter-bar button {
+    width: 100%;
+  }
+}
+
+/* =========================================
+   MOBILE
+========================================= */
+
 @media (max-width: 768px) {
   .filter-bar {
+    margin: 20px 0;
     display: block;
   }
 
+  /* Filter button */
   .filter-toggle {
     display: block;
+
     width: 100%;
     height: 50px;
-    margin-bottom: 10px;
+
+    margin-bottom: 12px;
+
     background: #2563eb;
     color: #fff;
-    border: 0;
+
+    border: none;
     border-radius: 10px;
+
     font-size: 15px;
+    font-weight: 600;
+
     cursor: pointer;
   }
+
+  .filter-toggle:hover {
+    background: #1d4ed8;
+  }
+
+  /* Hide filters until opened */
   .filter-controls {
     display: none;
+    width: 100%;
   }
+
   .filter-controls.open {
     display: flex;
     flex-direction: column;
@@ -77,23 +146,38 @@
   }
 
   .filter-bar select,
+  .filter-bar input,
   .filter-bar button {
     width: 100%;
+    min-width: 0;
+    height: 48px;
+    font-size: 14px;
   }
 }
 
-.filter-bar input {
-  flex: 1;
-  min-width: 150px;
-  height: 50px;
-  box-sizing: border-box;
-  border: 2px solid #e5e7eb;
-  border-radius: 10px;
-  padding: 0 15px;
-  font-size: 15px;
-  outline: none;
-}
+/* =========================================
+   SMALL MOBILE
+========================================= */
 
-.filter-bar input:focus {
-  border-color: #2563eb;
+@media (max-width: 480px) {
+  .filter-bar {
+    margin: 16px 0;
+  }
+
+  .filter-toggle {
+    height: 46px;
+    font-size: 14px;
+  }
+
+  .filter-controls.open {
+    gap: 10px;
+  }
+
+  .filter-bar select,
+  .filter-bar input,
+  .filter-bar button {
+    height: 46px;
+    font-size: 13px;
+    padding: 0 12px;
+  }
 }

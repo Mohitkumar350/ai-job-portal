@@ -1,4 +1,6 @@
+import { useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
+
 import { useAuth } from "../../context/AuthContext";
 import NotificationBell from "../NotificationBell/NotificationBell";
 
@@ -6,12 +8,17 @@ import "./Navbar.css";
 
 function Navbar() {
   const navigate = useNavigate();
-
   const { currentUser, logout, loading } = useAuth();
+
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const isLoggedIn = !!currentUser;
   const isAdmin = currentUser?.role === "admin";
   const isEmployer = currentUser?.role === "employer";
+
+  const closeMenu = () => {
+    setMenuOpen(false);
+  };
 
   // =====================================================
   // LOGOUT
@@ -29,6 +36,8 @@ function Navbar() {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
 
+    setMenuOpen(false);
+
     navigate("/login", {
       replace: true,
     });
@@ -44,38 +53,43 @@ function Navbar() {
 
   // =====================================================
   // ADMIN NAVBAR
-  // ONLY ADMIN DASHBOARD + LOGOUT
   // =====================================================
 
   if (isAdmin) {
     return (
       <nav className="navbar admin-navbar">
         <div className="navbar-container">
-          {/* ADMIN LOGO */}
-
-          <Link to="/admin" className="navbar-logo">
+          <Link to="/admin" className="navbar-logo" onClick={closeMenu}>
             MohiJobs
           </Link>
 
-          {/* ADMIN ONLY LINK */}
+          {/* MOBILE MENU BUTTON */}
+          <button
+            type="button"
+            className="mobile-menu-button"
+            onClick={() => setMenuOpen(!menuOpen)}
+            aria-label="Toggle navigation"
+          >
+            {menuOpen ? "✕" : "☰"}
+          </button>
 
-          <div className="navbar-links admin-links">
+          <div
+            className={`navbar-links admin-links ${
+              menuOpen ? "mobile-menu-open" : ""
+            }`}
+          >
             <NavLink
               to="/admin"
-              className={({ isActive }) =>
-                isActive
-                  ? "nav-link admin-nav-link active"
-                  : "nav-link admin-nav-link"
-              }
+              className="nav-link admin-nav-link"
+              onClick={closeMenu}
             >
               👑 Admin Dashboard
             </NavLink>
           </div>
 
-          {/* ADMIN RIGHT SIDE */}
-
           <div className="navbar-right">
             <NotificationBell />
+
             <div className="admin-user-info">
               <span className="navbar-username">{currentUser.name}</span>
 
@@ -95,35 +109,79 @@ function Navbar() {
     );
   }
 
+  // =====================================================
+  // EMPLOYER NAVBAR
+  // =====================================================
+
   if (isEmployer) {
     return (
       <nav className="navbar employer-navbar">
         <div className="navbar-container">
-          <Link to="/employer/dashboard" className="navbar-logo">
+          <Link
+            to="/employer/dashboard"
+            className="navbar-logo"
+            onClick={closeMenu}
+          >
             MohiJobs
           </Link>
 
-          <div className="navbar-links">
-            <NavLink to="/employer/dashboard" className="nav-link">
+          {/* MOBILE MENU BUTTON */}
+          <button
+            type="button"
+            className="mobile-menu-button"
+            onClick={() => setMenuOpen(!menuOpen)}
+            aria-label="Toggle navigation"
+          >
+            {menuOpen ? "✕" : "☰"}
+          </button>
+
+          <div className={`navbar-links ${menuOpen ? "mobile-menu-open" : ""}`}>
+            <NavLink
+              to="/employer/dashboard"
+              className="nav-link"
+              onClick={closeMenu}
+            >
               Employer Dashboard
             </NavLink>
-            <NavLink to="/employer/jobs" className="nav-link">
+
+            <NavLink
+              to="/employer/jobs"
+              className="nav-link"
+              onClick={closeMenu}
+            >
               My Jobs
             </NavLink>
-            <NavLink to="/employer/company" className="nav-link">
+
+            <NavLink
+              to="/employer/company"
+              className="nav-link"
+              onClick={closeMenu}
+            >
               Company Profile
             </NavLink>
-            <NavLink to="/employer/interviews" className="nav-link">
+
+            <NavLink
+              to="/employer/interviews"
+              className="nav-link"
+              onClick={closeMenu}
+            >
               Interviews
             </NavLink>
-            <NavLink to="/employer/analytics" className="nav-link">
+
+            <NavLink
+              to="/employer/analytics"
+              className="nav-link"
+              onClick={closeMenu}
+            >
               Analytics
             </NavLink>
           </div>
 
           <div className="navbar-right">
             <NotificationBell />
+
             <span className="navbar-username">{currentUser.name}</span>
+
             <button
               type="button"
               className="navbar-logout"
@@ -146,66 +204,88 @@ function Navbar() {
       <div className="navbar-container">
         {/* LOGO */}
 
-        <Link to="/" className="navbar-logo">
+        <Link to="/" className="navbar-logo" onClick={closeMenu}>
           MohiJobs
         </Link>
 
-        {/* NORMAL LINKS */}
+        {/* MOBILE MENU BUTTON */}
 
-        <div className="navbar-links">
-          <NavLink to="/" className="nav-link">
+        <button
+          type="button"
+          className="mobile-menu-button"
+          onClick={() => setMenuOpen(!menuOpen)}
+          aria-label="Toggle navigation"
+        >
+          {menuOpen ? "✕" : "☰"}
+        </button>
+
+        {/* NAV LINKS */}
+
+        <div className={`navbar-links ${menuOpen ? "mobile-menu-open" : ""}`}>
+          <NavLink to="/" className="nav-link" onClick={closeMenu}>
             Home
           </NavLink>
 
-          <NavLink to="/jobs" className="nav-link">
+          <NavLink to="/jobs" className="nav-link" onClick={closeMenu}>
             Jobs
           </NavLink>
 
-          <NavLink to="/companies" className="nav-link">
+          <NavLink to="/companies" className="nav-link" onClick={closeMenu}>
             Companies
           </NavLink>
 
-          <NavLink to="/resume-ai" className="nav-link">
+          <NavLink to="/resume-ai" className="nav-link" onClick={closeMenu}>
             Resume AI
           </NavLink>
 
-          <NavLink to="/interview-ai" className="nav-link">
+          <NavLink to="/interview-ai" className="nav-link" onClick={closeMenu}>
             Interview AI
           </NavLink>
 
-          {/* LOGGED-IN USER LINKS */}
-
           {isLoggedIn && (
             <>
-              <NavLink to="/jobs/recommended" className="nav-link">
+              <NavLink
+                to="/jobs/recommended"
+                className="nav-link"
+                onClick={closeMenu}
+              >
                 🤖 Recommended Jobs
               </NavLink>
 
-              <NavLink to="/profile" className="nav-link">
+              <NavLink to="/profile" className="nav-link" onClick={closeMenu}>
                 Profile
               </NavLink>
 
-              <NavLink to="/dashboard" className="nav-link">
+              <NavLink to="/dashboard" className="nav-link" onClick={closeMenu}>
                 Dashboard
               </NavLink>
 
-              <NavLink to="/my-applications" className="nav-link">
+              <NavLink
+                to="/my-applications"
+                className="nav-link"
+                onClick={closeMenu}
+              >
                 My Applications
               </NavLink>
 
-              <NavLink to="/saved-jobs" className="nav-link">
+              <NavLink
+                to="/saved-jobs"
+                className="nav-link"
+                onClick={closeMenu}
+              >
                 Saved Jobs
               </NavLink>
             </>
           )}
         </div>
 
-        {/* NORMAL USER RIGHT SIDE */}
+        {/* RIGHT SIDE */}
 
         <div className="navbar-right">
           {isLoggedIn ? (
             <>
               <NotificationBell />
+
               <span className="navbar-username">{currentUser.name}</span>
 
               <button
@@ -218,11 +298,11 @@ function Navbar() {
             </>
           ) : (
             <>
-              <Link to="/login" className="navbar-login">
+              <Link to="/login" className="navbar-login" onClick={closeMenu}>
                 Login
               </Link>
 
-              <Link to="/signup" className="navbar-signup">
+              <Link to="/signup" className="navbar-signup" onClick={closeMenu}>
                 Sign Up
               </Link>
             </>

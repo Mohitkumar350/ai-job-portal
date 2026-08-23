@@ -20,17 +20,31 @@ function FilterBar({
 }) {
   const [open, setOpen] = useState(false);
 
+  const handleClear = () => {
+    clearFilters();
+    setOpen(false);
+  };
+
   return (
     <div className="filter-bar">
+      {/* MOBILE FILTER BUTTON */}
       <button
         type="button"
         className="filter-toggle"
         onClick={() => setOpen((value) => !value)}
+        aria-expanded={open}
       >
-        Filters
+        {open ? "✕ Hide Filters" : "☰ Filters"}
       </button>
+
+      {/* FILTER CONTROLS */}
       <div className={`filter-controls ${open ? "open" : ""}`}>
-        <select value={location} onChange={(e) => setLocation(e.target.value)}>
+        {/* LOCATION */}
+        <select
+          value={location}
+          onChange={(e) => setLocation(e.target.value)}
+          aria-label="Location"
+        >
           <option value="">All Locations (India)</option>
           <option value="Bengaluru">Bengaluru / Bangalore</option>
           <option value="Hyderabad">Hyderabad</option>
@@ -43,7 +57,12 @@ function FilterBar({
           <option value="Remote">Remote (India)</option>
         </select>
 
-        <select value={jobType} onChange={(e) => setJobType(e.target.value)}>
+        {/* JOB TYPE */}
+        <select
+          value={jobType}
+          onChange={(e) => setJobType(e.target.value)}
+          aria-label="Job Type"
+        >
           <option value="">All Job Types</option>
           <option value="Full-Time">Full-Time</option>
           <option value="Part-Time">Part-Time</option>
@@ -51,9 +70,11 @@ function FilterBar({
           <option value="Contract">Contract</option>
         </select>
 
+        {/* EXPERIENCE */}
         <select
           value={experience}
           onChange={(e) => setExperience(e.target.value)}
+          aria-label="Experience"
         >
           <option value="">All Experience</option>
           <option value="Fresher">Fresher</option>
@@ -63,35 +84,53 @@ function FilterBar({
           <option value="5+">5+ years</option>
         </select>
 
-        <select value={workMode} onChange={(e) => setWorkMode(e.target.value)}>
+        {/* WORK MODE */}
+        <select
+          value={workMode}
+          onChange={(e) => setWorkMode(e.target.value)}
+          aria-label="Work Mode"
+        >
           <option value="">All Work Modes</option>
           <option value="Remote">Remote</option>
           <option value="On-site">On-Site</option>
           <option value="Hybrid">Hybrid</option>
         </select>
 
+        {/* MIN SALARY */}
         <input
           type="number"
           min="0"
           placeholder="Min salary"
           value={minSalary}
           onChange={(e) => setMinSalary(e.target.value)}
+          aria-label="Minimum salary"
         />
+
+        {/* MAX SALARY */}
         <input
           type="number"
           min="0"
           placeholder="Max salary"
           value={maxSalary}
           onChange={(e) => setMaxSalary(e.target.value)}
+          aria-label="Maximum salary"
         />
+
+        {/* SKILL */}
         <input
           type="text"
           placeholder="Skill"
           value={skill}
           onChange={(e) => setSkill(e.target.value)}
+          aria-label="Skill"
         />
 
-        <button type="button" onClick={clearFilters}>
+        {/* CLEAR */}
+        <button
+          type="button"
+          className="clear-filter-button"
+          onClick={handleClear}
+        >
           Clear Filters
         </button>
       </div>
