@@ -22,7 +22,7 @@ import ApplyJob from "../pages/ApplyJob/ApplyJob";
 import MyApplications from "../pages/MyApplications/MyApplications";
 import CompanyDetails from "../pages/CompanyDetails/CompanyDetails";
 
-import AdminDashboard from "../pages/Admin/AdminDashboard";
+import AdminDashboard from "../pages/Admin/adminDashboard";
 import EmployerDashboard from "../pages/Employer/EmployerDashboard";
 import EmployerJobs from "../pages/Employer/EmployerJobs";
 import CreateJob from "../pages/Employer/CreateJob";
