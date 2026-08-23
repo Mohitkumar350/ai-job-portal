@@ -3,23 +3,41 @@ import { Routes, Route } from "react-router-dom";
 import RoleRoute from "../components/RoleRoute/RoleRoute";
 import MainLayout from "../layouts/MainLayout";
 
+// ==============================
+// PUBLIC PAGES
+// ==============================
 import Home from "../pages/Home/Home";
 import Jobs from "../pages/Jobs/Jobs";
 import Companies from "../pages/Companies/Companies";
-import Dashboard from "../pages/Dashboard/Dashboard";
-import SavedJobs from "../pages/SavedJobs/SavedJobs";
-import ResumeAI from "../pages/ResumeAI/ResumeAI";
-import InterviewAI from "../pages/InterviewAI/InterviewAI";
 import Login from "../pages/Login/Login";
 import Signup from "../pages/Signup/Signup";
 import JobDetails from "../pages/JobDetails/JobDetails";
+import CompanyDetails from "../pages/CompanyDetails/CompanyDetails";
+
+// ==============================
+// JOB SEEKER PAGES
+// ==============================
+import Dashboard from "../pages/Dashboard/Dashboard";
+import SavedJobs from "../pages/SavedJobs/SavedJobs";
 import Profile from "../pages/Profile/Profile";
 import ApplyJob from "../pages/ApplyJob/ApplyJob";
 import MyApplications from "../pages/MyApplications/MyApplications";
-import CompanyDetails from "../pages/CompanyDetails/CompanyDetails";
+import RecommendedJobs from "../pages/RecommendedJobs/RecommendedJobs";
 
+// ==============================
+// AI PAGES
+// ==============================
+import ResumeAI from "../pages/ResumeAI/ResumeAI";
+import InterviewAI from "../pages/InterviewAI/InterviewAI";
+
+// ==============================
+// ADMIN
+// ==============================
 import AdminDashboard from "../pages/Admin/adminDashboard";
 
+// ==============================
+// EMPLOYER
+// ==============================
 import EmployerDashboard from "../pages/Employer/EmployerDashboard";
 import EmployerJobs from "../pages/Employer/EmployerJobs";
 import CreateJob from "../pages/Employer/CreateJob";
@@ -29,31 +47,52 @@ import CompanyProfile from "../pages/Employer/CompanyProfile";
 import ScheduleInterview from "../pages/Employer/ScheduleInterview";
 import Analytics from "../pages/Employer/Analytics";
 
+// ==============================
+// APPLICATIONS
+// ==============================
 import ApplicationDetails from "../pages/Applications/ApplicationDetails";
 
+// ==============================
+// NOTIFICATIONS
+// ==============================
 import Notifications from "../pages/Notifications/Notifications";
 
+// ==============================
+// INTERVIEWS
+// ==============================
 import Interviews from "../pages/Interviews/Interviews";
 import InterviewDetails from "../pages/Interviews/InterviewDetails";
-
-import RecommendedJobs from "../pages/RecommendedJobs/RecommendedJobs";
 
 function AppRoutes() {
   return (
     <Routes>
+      {/* =====================================================
+          MAIN LAYOUT
+      ===================================================== */}
+
       <Route path="/" element={<MainLayout />}>
-        {/* HOME */}
+        {/* =====================================================
+            PUBLIC ROUTES
+        ===================================================== */}
+
         <Route index element={<Home />} />
 
-        {/* PUBLIC */}
         <Route path="login" element={<Login />} />
+
         <Route path="signup" element={<Signup />} />
+
         <Route path="jobs" element={<Jobs />} />
+
         <Route path="jobs/:id" element={<JobDetails />} />
+
         <Route path="companies" element={<Companies />} />
+
         <Route path="companies/:id" element={<CompanyDetails />} />
 
-        {/* ADMIN */}
+        {/* =====================================================
+            ADMIN ROUTE
+        ===================================================== */}
+
         <Route
           path="admin"
           element={
@@ -63,7 +102,10 @@ function AppRoutes() {
           }
         />
 
-        {/* EMPLOYER */}
+        {/* =====================================================
+            EMPLOYER ROUTES
+        ===================================================== */}
+
         <Route
           path="employer/dashboard"
           element={
@@ -145,7 +187,10 @@ function AppRoutes() {
           }
         />
 
-        {/* JOB SEEKER - RECOMMENDED JOBS */}
+        {/* =====================================================
+            JOB SEEKER - RECOMMENDED JOBS
+        ===================================================== */}
+
         <Route
           path="jobs/recommended"
           element={
@@ -164,7 +209,10 @@ function AppRoutes() {
           }
         />
 
-        {/* INTERVIEWS */}
+        {/* =====================================================
+            JOB SEEKER - INTERVIEWS
+        ===================================================== */}
+
         <Route
           path="interviews"
           element={
@@ -185,7 +233,10 @@ function AppRoutes() {
           }
         />
 
-        {/* APPLICATION DETAILS */}
+        {/* =====================================================
+            APPLICATION DETAILS
+        ===================================================== */}
+
         <Route
           path="applications/:id"
           element={
@@ -197,7 +248,10 @@ function AppRoutes() {
           }
         />
 
-        {/* NOTIFICATIONS */}
+        {/* =====================================================
+            NOTIFICATIONS
+        ===================================================== */}
+
         <Route
           path="notifications"
           element={
@@ -215,7 +269,10 @@ function AppRoutes() {
           }
         />
 
-        {/* JOB SEEKER DASHBOARD */}
+        {/* =====================================================
+            JOB SEEKER DASHBOARD
+        ===================================================== */}
+
         <Route
           path="dashboard"
           element={
@@ -225,7 +282,10 @@ function AppRoutes() {
           }
         />
 
-        {/* PROFILE */}
+        {/* =====================================================
+            JOB SEEKER PROFILE
+        ===================================================== */}
+
         <Route
           path="profile"
           element={
@@ -235,7 +295,10 @@ function AppRoutes() {
           }
         />
 
-        {/* APPLY JOB */}
+        {/* =====================================================
+            APPLY JOB
+        ===================================================== */}
+
         <Route
           path="apply/:id"
           element={
@@ -245,7 +308,10 @@ function AppRoutes() {
           }
         />
 
-        {/* MY APPLICATIONS */}
+        {/* =====================================================
+            MY APPLICATIONS
+        ===================================================== */}
+
         <Route
           path="my-applications"
           element={
@@ -255,7 +321,10 @@ function AppRoutes() {
           }
         />
 
-        {/* SAVED JOBS */}
+        {/* =====================================================
+            SAVED JOBS
+        ===================================================== */}
+
         <Route
           path="saved-jobs"
           element={
@@ -265,9 +334,29 @@ function AppRoutes() {
           }
         />
 
-        {/* AI FEATURES */}
-        <Route path="resume-ai" element={<ResumeAI />} />
-        <Route path="interview-ai" element={<InterviewAI />} />
+        {/* =====================================================
+            🔐 AI FEATURES
+            LOGIN REQUIRED
+            JOB SEEKER ONLY
+        ===================================================== */}
+
+        <Route
+          path="resume-ai"
+          element={
+            <RoleRoute allowedRoles={["user", "candidate", "job_seeker"]}>
+              <ResumeAI />
+            </RoleRoute>
+          }
+        />
+
+        <Route
+          path="interview-ai"
+          element={
+            <RoleRoute allowedRoles={["user", "candidate", "job_seeker"]}>
+              <InterviewAI />
+            </RoleRoute>
+          }
+        />
       </Route>
     </Routes>
   );

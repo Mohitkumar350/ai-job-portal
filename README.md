@@ -1,11 +1,15 @@
 ﻿# MohiJobs
+
+AI-Powered Job & Recruitment Platform
+
+MohiJobs is a full-stack recruitment platform that connects job seekers with employers. It provides AI-powered resume analysis, AI mock technical interviews, intelligent job recommendations, job applications, interview scheduling, and recruitment analytics.
+
+---
+
 ## 🌐 Live Demo
 
 - **Frontend:** https://ai-job-portal-ehk1-two.vercel.app/
 - **Backend API:** https://ai-job-portal-backend-hv62.onrender.com
-AI-Powered Job & Recruitment Platform
-
-A production-ready, full-stack recruitment platform connecting job seekers with employers, powered by AI resume analysis, interactive AI mock technical interviews, and deterministic weighted AI job recommendations.
 
 ---
 
@@ -13,177 +17,312 @@ A production-ready, full-stack recruitment platform connecting job seekers with 
 
 ### 🔐 Authentication & Authorization
 
-- **Firebase Authentication**: Email & password authentication with email verification enforcement.
-- **Email Verification Guard**: Stale auth resolution with user.reload() verification before session initialization.
-- **Disposable Email Protection**: Domain validation blocking temporary / disposable emails at registration.
-- **Role-Based Access Control (RBAC)**: Secure server-side isolation for **Job Seeker**, **Employer**, and **Admin** roles with zero trust for client-supplied identity.
+- **Firebase Authentication** – Email and password authentication.
+- **Email Verification Guard** – Users must verify their email before accessing protected features.
+- **Disposable Email Protection** – Blocks temporary/disposable email domains during registration.
+- **Role-Based Access Control (RBAC)** – Separate permissions for:
+  - Job Seeker
+  - Employer
+  - Admin
+- **Protected Routes** – Private features cannot be accessed without authentication.
+
+---
 
 ### 👤 Job Seeker Experience
 
-- **Profile & Resume Management**: Complete candidate profiles, bio, skills management, and PDF resume upload.
-- **AI Job Recommendations**: Deterministic 4-factor recommendation engine matching profile skills (60%), role relevance (20%), experience (10%), and location/work mode (10%).
-- **Advanced Job Search**: Instant multi-criteria filtering by keywords, location, employment type (Full-Time, Part-Time, Internship, Contract), work mode (Remote, On-Site, Hybrid), experience, skills, and salary ranges.
-- **Sorting & Server-Side Pagination**: Sort by newest, oldest, salary high-to-low, salary low-to-high, and best match with responsive pagination.
-- **Job Applications**: 1-click job applications with resume attachment, cover letters, duplicate application protection, and live status tracking (Applied, Under Review, Interview Scheduled, Selected, Rejected).
-- **Saved Jobs**: Bookmark jobs for later viewing.
-- **In-App Notifications**: Real-time updates when applications are reviewed, interviews are scheduled, or statuses change.
+- **Profile & Resume Management**
+  - Candidate profile
+  - Bio
+  - Skills
+  - PDF resume upload
+
+- **AI Resume Analyzer**
+  - ATS resume score
+  - Strength analysis
+  - Weakness/gap detection
+  - Improvement suggestions
+
+- **AI Mock Technical Interview**
+  - Multiple developer roles
+  - Beginner, Intermediate and Advanced difficulty
+  - AI-generated interview questions
+  - Timed questions
+  - Answer evaluation
+  - Score out of 10
+  - Strengths and improvements
+  - Ideal answer
+
+- **AI Job Recommendations**
+  - Skill matching
+  - Role relevance
+  - Experience matching
+  - Location/work-mode matching
+
+- **Advanced Job Search**
+  - Keywords
+  - Location
+  - Employment type
+  - Work mode
+  - Experience
+  - Skills
+  - Salary range
+
+- **Job Applications**
+  - One-click applications
+  - Resume attachment
+  - Cover letter
+  - Duplicate application protection
+  - Application status tracking
+
+- **Saved Jobs**
+  - Bookmark jobs
+  - View saved jobs later
+
+- **Notifications**
+  - Application updates
+  - Interview notifications
+  - Status changes
+
+---
 
 ### 🏢 Employer Experience
 
-- **Employer Dashboard**: High-level workspace overview of active postings, incoming candidate submissions, and interview milestones.
-- **Job Lifecycle Management (CRUD)**: Create, edit, publish, and close job postings with verified ownership enforcement.
-- **Applicant Review & Status Pipeline**: Inspect applicant profiles, download resumes, and advance candidates through recruitment stages.
-- **Company Profile Management**: Maintain company branding, logo, description, website, size, and public company pages.
-- **Interview Scheduling**: Schedule online and in-person interviews with meeting links, time conflict detection, and notifications.
-- **Recruitment Analytics**: Comprehensive metrics on job performance, status distribution, selection rates, interview rates, and application trends over 7d, 30d, 90d, and all-time windows.
+- **Employer Dashboard**
+  - Active jobs
+  - Applications
+  - Interviews
+  - Recruitment overview
+
+- **Job Management**
+  - Create jobs
+  - Edit jobs
+  - Publish jobs
+  - Close jobs
+
+- **Applicant Management**
+  - View applicants
+  - View candidate profiles
+  - Download resumes
+  - Update application status
+
+- **Company Profile**
+  - Company name
+  - Logo
+  - Description
+  - Website
+  - Company size
+
+- **Interview Scheduling**
+  - Schedule interviews
+  - Online/in-person interviews
+  - Meeting links
+  - Time conflict detection
+  - Interview notifications
+
+- **Recruitment Analytics**
+  - Application trends
+  - Interview rates
+  - Selection rates
+  - Job performance
+  - 7-day analytics
+  - 30-day analytics
+  - 90-day analytics
+  - All-time analytics
+
+---
 
 ### 🤖 AI Capabilities
 
-- **AI Resume Analyzer**: Powered by Google Gemini AI and PDF text extraction, evaluating overall ATS score, strengths, gaps, and actionable recommendations.
-- **AI Mock Technical Interview**: Interactive AI interviewer evaluating candidate responses across multiple developer roles and difficulty levels with detailed scoring and feedback.
-- **AI Job Match Engine**: Computes transparent percentage match scores with itemized matched skills, missing skills, and context explanations.
+#### AI Resume Analyzer
+
+Powered by Google Gemini AI and PDF text extraction.
+
+It analyzes:
+
+- Overall ATS score
+- Candidate summary
+- Technical skills
+- Strengths
+- Weaknesses
+- ATS improvements
+- Project improvements
+- Final recommendations
+
+#### AI Mock Technical Interview
+
+The AI interviewer:
+
+1. Generates role-specific questions.
+2. Provides a time limit.
+3. Accepts the candidate's answer.
+4. Evaluates the answer.
+5. Generates a score from 0–10.
+6. Shows strengths.
+7. Shows areas for improvement.
+8. Provides feedback.
+9. Provides an ideal answer.
+10. Calculates the final average score.
+
+#### AI Job Match Engine
+
+Provides transparent job matching based on:
+
+- Skills – 60%
+- Role relevance – 20%
+- Experience – 10%
+- Location/work mode – 10%
 
 ---
 
 ## 🛠️ Technology Stack
 
-- **Frontend**: React, Vite, React Router v7, React Icons, Recharts, pdfjs-dist, react-markdown, @google/generative-ai
-- **Backend**: Node.js, Express.js, MongoDB / Mongoose, Firebase Admin SDK, JWT, bcryptjs, cors
-- **Database**: MongoDB Atlas
-- **Authentication**: Firebase Authentication
-- **AI Integration**: Google Generative AI (Gemini 2.5 Flash)
+### Frontend
+
+- React
+- Vite
+- React Router
+- React Icons
+- Recharts
+- pdfjs-dist
+- react-markdown
+- Google Generative AI SDK
+
+### Backend
+
+- Node.js
+- Express.js
+- MongoDB
+- Mongoose
+- Firebase Admin SDK
+- JWT
+- bcryptjs
+- CORS
+
+### Database
+
+- MongoDB Atlas
+
+### Authentication
+
+- Firebase Authentication
+
+### AI
+
+- Google Gemini
 
 ---
 
-## 🔒 Security & Architecture Standards
+## 🔒 Security & Architecture
 
-1. **Server-Side Identity Derivation**: All protected endpoints derive identity directly from verified JWT / Firebase tokens (
-   eq.userId).
-2. **Resource Ownership Guards**: Employers can only modify/view their own jobs, company profile, and applicant lists. Cross-tenant access is rejected with 403 Forbidden.
-3. **Input Sanitization & Mass-Assignment Protection**: Explicit parameter whitelisting prevents unauthorized modification of internal role, owner, or status fields.
-4. **MongoDB Security**: Strict ObjectId validation to prevent query injection and unhandled cast errors.
-5. **Security Headers**: Standard HTTP security headers configured (nosniff, DENY framing, XSS protection).
-6. **Scoped CORS**: Restricted origins in production to prevent cross-origin exploitation of private APIs.
+### 1. Authentication
+
+Protected application features require an authenticated user.
+
+AI Resume Analyzer and AI Mock Interview are also protected and cannot be accessed by unauthenticated users.
+
+### 2. Role-Based Access Control
+
+The application separates users into:
+
+- Job Seeker
+- Employer
+- Admin
+
+Each role can access only the features permitted for that role.
+
+### 3. Server-Side Identity
+
+Protected backend endpoints derive the authenticated user's identity from verified authentication tokens instead of trusting client-provided user IDs.
+
+### 4. Resource Ownership
+
+Employers can only access and modify their own:
+
+- Jobs
+- Company profile
+- Applicants
+- Recruitment data
+
+Unauthorized cross-user access is rejected.
+
+### 5. Input Protection
+
+The backend uses explicit field validation and parameter whitelisting to prevent unauthorized modification of protected fields.
+
+### 6. MongoDB Security
+
+MongoDB ObjectIds are validated before database queries to prevent invalid requests and query-related errors.
+
+### 7. CORS
+
+Production API access is restricted to configured frontend origins.
+
+### 8. Environment Variables
+
+Sensitive credentials such as:
+
+- MongoDB URI
+- JWT secret
+- Firebase credentials
+- Gemini API key
+
+are stored in environment variables and should never be committed to GitHub.
 
 ---
 
 ## 📁 Project Structure
 
-`├── Backend/
+```text
+MohiJobs/
+│
+├── Backend/
+│   │
 │   ├── config/
-│   │   ├── db.js                 # MongoDB connection
-│   │   └── firebaseAdmin.js      # Firebase Admin SDK init
+│   │   ├── db.js
+│   │   └── firebaseAdmin.js
+│   │
 │   ├── middleware/
-│   │   ├── authMiddleware.js     # JWT verification & req.userId extraction
-│   │   ├── employerMiddleware.js # Employer role verification
-│   │   └── adminMiddleware.js    # Admin role verification
+│   │   ├── authMiddleware.js
+│   │   ├── employerMiddleware.js
+│   │   └── adminMiddleware.js
+│   │
 │   ├── models/
-│   │   ├── User.js               # User & candidate profile schema
-│   │   ├── Job.js                # Job posting schema
-│   │   ├── Application.js        # Job application schema (unique compound index)
-│   │   ├── Company.js            # Employer company profile
-│   │   ├── Interview.js          # Interview schedule schema
-│   │   ├── Notification.js       # In-app notifications
-│   │   └── SavedJob.js           # Bookmarked jobs
+│   │   ├── User.js
+│   │   ├── Job.js
+│   │   ├── Application.js
+│   │   ├── Company.js
+│   │   ├── Interview.js
+│   │   ├── Notification.js
+│   │   └── SavedJob.js
+│   │
 │   ├── routes/
-│   │   ├── authRoutes.js         # Firebase login, OTP, verification link helper
-│   │   ├── jobRoutes.js          # Job CRUD, search, filter, sort, paginate
-│   │   ├── applications.js       # Apply, candidate tracking, employer applicant review
-│   │   ├── companyRoutes.js      # Company profile & public pages
-│   │   ├── interviewRoutes.js    # Interview scheduling & management
-│   │   ├── analyticsRoutes.js    # Recruitment analytics aggregations
-│   │   ├── recommendationRoutes.js# AI job recommendation engine
-│   │   ├── notificationRoutes.js # In-app notification management
-│   │   └── userRoutes.js         # Profile management
-│   ├── server.js                 # Express application entry point
+│   │   ├── authRoutes.js
+│   │   ├── jobRoutes.js
+│   │   ├── applications.js
+│   │   ├── companyRoutes.js
+│   │   ├── interviewRoutes.js
+│   │   ├── analyticsRoutes.js
+│   │   ├── recommendationRoutes.js
+│   │   ├── notificationRoutes.js
+│   │   └── userRoutes.js
+│   │
+│   ├── server.js
 │   ├── .env.example
 │   └── package.json
 │
 ├── frontend/
+│   │
 │   ├── src/
-│   │   ├── components/           # Reusable UI components (Navbar, JobCard, FilterBar, etc.)
-│   │   ├── context/              # AuthContext & SavedJobsContext
-│   │   ├── pages/                # Route pages (Jobs, RecommendedJobs, Dashboard, Employer, etc.)
-│   │   ├── services/             # API clients (jobService, recommendationService, etc.)
-│   │   ├── routes/AppRoutes.jsx  # Application routing & RoleRoute protection
-│   │   └── firebase.js           # Client-side Firebase SDK configuration
+│   │   ├── components/
+│   │   ├── context/
+│   │   ├── pages/
+│   │   ├── services/
+│   │   ├── routes/
+│   │   │   └── AppRoutes.jsx
+│   │   └── firebase.js
+│   │
 │   ├── .env.example
 │   └── package.json
-└── README.md`
-
----
-
-## ⚙️ Environment Setup & Local Development
-
-### 1. Prerequisites
-
-- Node.js (v18 or higher)
-- MongoDB database (local or MongoDB Atlas)
-- Firebase Project with Authentication enabled (Email/Password)
-- Google Gemini API Key
-
-### 2. Backend Setup
-
-`ash
-cd Backend
-npm install
-`
-Create Backend/.env based on Backend/.env.example:
-`env
-PORT=5000
-MONGODB_URI=your_mongodb_connection_string
-JWT_SECRET=your_jwt_secret
-CLIENT_URL=http://localhost:5173
-`
-Place your Firebase Admin service account key JSON in Backend/firebase-service-account.json.
-
-Start the backend server:
-`ash
-npm run dev
-
-# Server running at http://localhost:5000
-
-`
-
-### 3. Frontend Setup
-
-`ash
-cd frontend
-npm install
-`
-Create rontend/.env based on rontend/.env.example:
-`env
-VITE_API_URL=http://localhost:5000
-VITE_GEMINI_API_KEY=your_gemini_api_key
-`
-
-Start Vite development server:
-`ash
-npm run dev
-
-# Running at http://localhost:5173
-
-`
-
----
-
-## 🚀 Production Build & Deployment
-
-### Production Build
-
-`ash
-cd frontend
-npm run build
-`
-
-### Deployment Targets
-
-- **Frontend**: Vercel
-- **Backend**: Render / Railway
-- **Database**: MongoDB Atlas
-
----
-
-## 📄 Scope Notice
-
-_Note: Real-time messaging, WebRTC, and video interviews are intentionally excluded per project requirements in favor of in-app structured interview management._
+│
+└── README.md
+```

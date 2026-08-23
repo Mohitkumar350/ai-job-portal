@@ -14,6 +14,7 @@ function InterviewAI() {
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState("");
   const [feedback, setFeedback] = useState(null);
+
   const [currentQuestion, setCurrentQuestion] = useState(1);
   const [loading, setLoading] = useState(false);
   const [scores, setScores] = useState([]);
@@ -33,11 +34,9 @@ function InterviewAI() {
       setQuestion(q);
       setStarted(true);
       setCurrentQuestion(1);
-
       setAnswer("");
       setFeedback(null);
       setScores([]);
-
       setTimeLeft(120);
       setInterviewFinished(false);
     } catch (err) {
@@ -52,6 +51,8 @@ function InterviewAI() {
   // Submit Answer
   // ==========================
   const submitAnswer = async () => {
+    if (loading || feedback) return;
+
     const finalAnswer = answer.trim() || "No answer submitted.";
 
     setLoading(true);
@@ -60,8 +61,7 @@ function InterviewAI() {
       const result = await evaluateAnswer(question, finalAnswer);
 
       setFeedback(result);
-
-      setScores((prev) => [...prev, result.score]);
+      setScores((prev) => [...prev, Number(result.score)]);
     } catch (err) {
       console.error(err);
       alert("Evaluation failed.");
@@ -85,13 +85,9 @@ function InterviewAI() {
       const q = await generateQuestion(role, difficulty);
 
       setQuestion(q);
-
       setCurrentQuestion((prev) => prev + 1);
-
       setAnswer("");
-
       setFeedback(null);
-
       setTimeLeft(120);
     } catch (err) {
       console.error(err);
@@ -105,7 +101,9 @@ function InterviewAI() {
   // Timer
   // ==========================
   useEffect(() => {
-    if (!started || feedback || interviewFinished) return;
+    if (!started || feedback || interviewFinished || loading) {
+      return;
+    }
 
     if (timeLeft <= 0) {
       submitAnswer();
@@ -117,23 +115,54 @@ function InterviewAI() {
     }, 1000);
 
     return () => clearTimeout(timer);
-  }, [started, feedback, interviewFinished, timeLeft]);
+  }, [started, feedback, interviewFinished, timeLeft, loading]);
 
   // ==========================
   // Average Score
   // ==========================
   const averageScore =
     scores.length > 0
-      ? (scores.reduce((a, b) => a + b, 0) / scores.length).toFixed(1)
-      : 0;
+      ? (
+          scores.reduce((total, score) => total + score, 0) / scores.length
+        ).toFixed(1)
+      : "0.0";
+
+  // ==========================
+  // Restart
+  // ==========================
+  const restartInterview = () => {
+    setStarted(false);
+    setQuestion("");
+    setAnswer("");
+    setFeedback(null);
+    setScores([]);
+    setCurrentQuestion(1);
+    setTimeLeft(120);
+    setInterviewFinished(false);
+  };
 
   return (
     <div className="interview-page">
       <div className="interview-card">
-        <h1>🤖 AI Mock Interview</h1>
+        {/* HEADER */}
+        <div className="interview-header">
+          <div className="ai-badge">AI POWERED</div>
+
+          <h1>🤖 AI Mock Interview</h1>
+
+          <p>Practice real interview questions and get instant AI feedback.</p>
+        </div>
 
         {!started ? (
-          <>
+          /* ==========================
+             SETUP SCREEN
+          ========================== */
+          <div className="setup-section">
+            <div className="setup-title">
+              <h2>Start Your Interview</h2>
+              <p>Choose your role and interview difficulty.</p>
+            </div>
+
             <div className="form-group">
               <label>Job Role</label>
 
@@ -178,62 +207,99 @@ function InterviewAI() {
               onClick={startInterview}
               disabled={loading}
             >
-              {loading ? "Generating..." : "Start Interview"}
+              {loading ? "Generating..." : "Start Interview →"}
             </button>
-          </>
+          </div>
         ) : (
-          <>
-            {/* Progress Bar */}
+          /* ==========================
+             INTERVIEW SCREEN
+          ========================== */
+          <div className="interview-content">
+            {/* TOP BAR */}
+            <div className="interview-topbar">
+              <div className="question-count">
+                Question <strong>{currentQuestion}</strong> / {totalQuestions}
+              </div>
+
+              <div className={`timer ${timeLeft <= 30 ? "timer-danger" : ""}`}>
+                ⏱ {Math.floor(timeLeft / 60)}:
+                {(timeLeft % 60).toString().padStart(2, "0")}
+              </div>
+            </div>
+
+            {/* PROGRESS */}
             <div className="progress-container">
               <div
                 className="progress-fill"
                 style={{
                   width: `${(currentQuestion / totalQuestions) * 100}%`,
                 }}
-              ></div>
+              />
             </div>
 
-            <div className="progress">
-              Question {currentQuestion} / {totalQuestions}
-            </div>
-
-            {/* Timer */}
-            <div className="timer">
-              ⏱ Time Left : {Math.floor(timeLeft / 60)}:
-              {(timeLeft % 60).toString().padStart(2, "0")}
-            </div>
-
-            {/* Question */}
+            {/* QUESTION */}
             <div className="question-box">
-              <h2>{question}</h2>
+              <div className="question-label">INTERVIEW QUESTION</div>
+
+              {loading && !feedback ? (
+                <div className="question-loading">
+                  <span className="spinner"></span>
+                  <span>AI is processing...</span>
+                </div>
+              ) : (
+                <h2 className="question-text">{question}</h2>
+              )}
             </div>
 
-            {/* Answer */}
-            <textarea
-              rows="8"
-              placeholder="Write your answer here..."
-              value={answer}
-              onChange={(e) => setAnswer(e.target.value)}
-            />
-
-            {!feedback ? (
-              <button
-                className="primary-btn"
-                onClick={submitAnswer}
-                disabled={loading}
-              >
-                {loading ? "Evaluating..." : "Submit Answer"}
-              </button>
-            ) : (
+            {/* ANSWER */}
+            {!feedback && (
               <>
-                <div className="feedback-card">
-                  <h2>🤖 AI Evaluation</h2>
+                <div className="answer-header">
+                  <label>Your Answer</label>
 
-                  <div className="score-box">
-                    ⭐ Score : {feedback.score}/10
+                  <span>Explain your answer clearly and confidently.</span>
+                </div>
+
+                <textarea
+                  className="answer-textarea"
+                  rows="8"
+                  placeholder="Type your answer here..."
+                  value={answer}
+                  onChange={(e) => setAnswer(e.target.value)}
+                  disabled={loading}
+                />
+
+                <button
+                  className="primary-btn"
+                  onClick={submitAnswer}
+                  disabled={loading}
+                >
+                  {loading ? "Evaluating Answer..." : "Submit Answer →"}
+                </button>
+              </>
+            )}
+
+            {/* FEEDBACK */}
+            {feedback && (
+              <div className="feedback-wrapper">
+                <div className="feedback-card">
+                  <div className="feedback-title">
+                    <h2>🤖 AI Evaluation</h2>
+
+                    <div className="score-box">⭐ {feedback.score}/10</div>
                   </div>
 
-                  <div className="section">
+                  <div className="score-progress">
+                    <div
+                      className="score-progress-fill"
+                      style={{
+                        width: `${feedback.score * 10}%`,
+                      }}
+                    />
+                  </div>
+
+                  {/* STRENGTHS */}
+                  <div className="section strength-section">
                     <h3>👍 Strengths</h3>
 
                     <ul>
@@ -247,7 +313,8 @@ function InterviewAI() {
                     </ul>
                   </div>
 
-                  <div className="section">
+                  {/* IMPROVEMENTS */}
+                  <div className="section improvement-section">
                     <h3>⚠️ Needs Improvement</h3>
 
                     <ul>
@@ -261,59 +328,58 @@ function InterviewAI() {
                     </ul>
                   </div>
 
+                  {/* FEEDBACK */}
                   <div className="section">
                     <h3>💬 Feedback</h3>
                     <p>{feedback.feedback}</p>
                   </div>
 
-                  <div className="section">
+                  {/* IDEAL ANSWER */}
+                  <div className="section ideal-answer">
                     <h3>✅ Ideal Answer</h3>
                     <p>{feedback.correctAnswer}</p>
                   </div>
                 </div>
 
+                {/* NEXT / FINAL */}
                 {currentQuestion < totalQuestions ? (
                   <button
                     className="primary-btn"
                     onClick={nextQuestion}
                     disabled={loading}
                   >
-                    {loading ? "Loading..." : "Next Question"}
+                    {loading ? "Loading..." : "Next Question →"}
                   </button>
                 ) : (
                   <div className="final-report">
-                    <h2>🎉 Interview Completed</h2>
+                    <div className="completion-icon">🎉</div>
 
-                    <h3>Average Score: {averageScore}/10</h3>
+                    <h2>Interview Completed!</h2>
+
+                    <div className="final-score">
+                      {averageScore}
+                      <span>/10</span>
+                    </div>
 
                     <p>
-                      {averageScore >= 8
+                      {Number(averageScore) >= 8
                         ? "🌟 Excellent! You're interview ready."
-                        : averageScore >= 6
+                        : Number(averageScore) >= 6
                           ? "👍 Good performance. Keep practicing."
                           : "📚 Practice more before attending interviews."}
                     </p>
 
                     <button
-                      className="primary-btn"
-                      onClick={() => {
-                        setStarted(false);
-                        setQuestion("");
-                        setAnswer("");
-                        setFeedback(null);
-                        setScores([]);
-                        setCurrentQuestion(1);
-                        setTimeLeft(120);
-                        setInterviewFinished(false);
-                      }}
+                      className="primary-btn restart-btn"
+                      onClick={restartInterview}
                     >
                       Restart Interview
                     </button>
                   </div>
                 )}
-              </>
+              </div>
             )}
-          </>
+          </div>
         )}
       </div>
     </div>
