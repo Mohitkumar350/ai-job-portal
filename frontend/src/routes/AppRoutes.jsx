@@ -10,31 +10,32 @@ import Dashboard from "../pages/Dashboard/Dashboard";
 import SavedJobs from "../pages/SavedJobs/SavedJobs";
 import ResumeAI from "../pages/ResumeAI/ResumeAI";
 import InterviewAI from "../pages/InterviewAI/InterviewAI";
-
 import Login from "../pages/Login/Login";
 import Signup from "../pages/Signup/Signup";
-
 import JobDetails from "../pages/JobDetails/JobDetails";
-import NotFound from "../pages/NotFound/NotFound";
-
 import Profile from "../pages/Profile/Profile";
 import ApplyJob from "../pages/ApplyJob/ApplyJob";
 import MyApplications from "../pages/MyApplications/MyApplications";
 import CompanyDetails from "../pages/CompanyDetails/CompanyDetails";
 
 import AdminDashboard from "../pages/Admin/adminDashboard";
+
 import EmployerDashboard from "../pages/Employer/EmployerDashboard";
 import EmployerJobs from "../pages/Employer/EmployerJobs";
 import CreateJob from "../pages/Employer/CreateJob";
 import EditJob from "../pages/Employer/EditJob";
 import Applicants from "../pages/Employer/Applicants";
-import ApplicationDetails from "../pages/Applications/ApplicationDetails";
 import CompanyProfile from "../pages/Employer/CompanyProfile";
-import Notifications from "../pages/Notifications/Notifications";
 import ScheduleInterview from "../pages/Employer/ScheduleInterview";
+import Analytics from "../pages/Employer/Analytics";
+
+import ApplicationDetails from "../pages/Applications/ApplicationDetails";
+
+import Notifications from "../pages/Notifications/Notifications";
+
 import Interviews from "../pages/Interviews/Interviews";
 import InterviewDetails from "../pages/Interviews/InterviewDetails";
-import Analytics from "../pages/Employer/Analytics";
+
 import RecommendedJobs from "../pages/RecommendedJobs/RecommendedJobs";
 
 function AppRoutes() {
@@ -42,25 +43,17 @@ function AppRoutes() {
     <Routes>
       <Route path="/" element={<MainLayout />}>
         {/* HOME */}
-
         <Route index element={<Home />} />
 
         {/* PUBLIC */}
-
         <Route path="login" element={<Login />} />
-
         <Route path="signup" element={<Signup />} />
-
         <Route path="jobs" element={<Jobs />} />
-
         <Route path="jobs/:id" element={<JobDetails />} />
-
         <Route path="companies" element={<Companies />} />
-
         <Route path="companies/:id" element={<CompanyDetails />} />
 
         {/* ADMIN */}
-
         <Route
           path="admin"
           element={
@@ -71,7 +64,6 @@ function AppRoutes() {
         />
 
         {/* EMPLOYER */}
-
         <Route
           path="employer/dashboard"
           element={
@@ -80,6 +72,7 @@ function AppRoutes() {
             </RoleRoute>
           }
         />
+
         <Route
           path="employer/jobs"
           element={
@@ -88,6 +81,7 @@ function AppRoutes() {
             </RoleRoute>
           }
         />
+
         <Route
           path="employer/jobs/new"
           element={
@@ -96,6 +90,7 @@ function AppRoutes() {
             </RoleRoute>
           }
         />
+
         <Route
           path="employer/jobs/:id/edit"
           element={
@@ -104,6 +99,7 @@ function AppRoutes() {
             </RoleRoute>
           }
         />
+
         <Route
           path="employer/jobs/:jobId/applicants"
           element={
@@ -112,6 +108,7 @@ function AppRoutes() {
             </RoleRoute>
           }
         />
+
         <Route
           path="employer/company"
           element={
@@ -120,6 +117,7 @@ function AppRoutes() {
             </RoleRoute>
           }
         />
+
         <Route
           path="employer/applications/:applicationId/interview"
           element={
@@ -128,6 +126,7 @@ function AppRoutes() {
             </RoleRoute>
           }
         />
+
         <Route
           path="employer/interviews"
           element={
@@ -136,6 +135,7 @@ function AppRoutes() {
             </RoleRoute>
           }
         />
+
         <Route
           path="employer/analytics"
           element={
@@ -145,8 +145,7 @@ function AppRoutes() {
           }
         />
 
-        {/* JOB SEEKER & INTERVIEWS */}
-
+        {/* JOB SEEKER - RECOMMENDED JOBS */}
         <Route
           path="jobs/recommended"
           element={
@@ -155,6 +154,7 @@ function AppRoutes() {
             </RoleRoute>
           }
         />
+
         <Route
           path="dashboard/recommended-jobs"
           element={
@@ -163,6 +163,8 @@ function AppRoutes() {
             </RoleRoute>
           }
         />
+
+        {/* INTERVIEWS */}
         <Route
           path="interviews"
           element={
@@ -171,6 +173,7 @@ function AppRoutes() {
             </RoleRoute>
           }
         />
+
         <Route
           path="interviews/:id"
           element={
@@ -181,6 +184,8 @@ function AppRoutes() {
             </RoleRoute>
           }
         />
+
+        {/* APPLICATION DETAILS */}
         <Route
           path="applications/:id"
           element={
@@ -191,6 +196,8 @@ function AppRoutes() {
             </RoleRoute>
           }
         />
+
+        {/* NOTIFICATIONS */}
         <Route
           path="notifications"
           element={
@@ -208,8 +215,7 @@ function AppRoutes() {
           }
         />
 
-        {/* PROTECTED */}
-
+        {/* JOB SEEKER DASHBOARD */}
         <Route
           path="dashboard"
           element={
@@ -219,6 +225,7 @@ function AppRoutes() {
           }
         />
 
+        {/* PROFILE */}
         <Route
           path="profile"
           element={
@@ -228,6 +235,7 @@ function AppRoutes() {
           }
         />
 
+        {/* APPLY JOB */}
         <Route
           path="apply/:id"
           element={
@@ -237,6 +245,7 @@ function AppRoutes() {
           }
         />
 
+        {/* MY APPLICATIONS */}
         <Route
           path="my-applications"
           element={
@@ -246,6 +255,7 @@ function AppRoutes() {
           }
         />
 
+        {/* SAVED JOBS */}
         <Route
           path="saved-jobs"
           element={
@@ -255,13 +265,9 @@ function AppRoutes() {
           }
         />
 
+        {/* AI FEATURES */}
         <Route path="resume-ai" element={<ResumeAI />} />
-
         <Route path="interview-ai" element={<InterviewAI />} />
-
-        {/* 404 */}
-
-        <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>
   );
