@@ -1,31 +1,23 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
 import { useAuth } from "../../context/AuthContext";
-
 import { getAllUsers, deleteUser } from "../../services/adminService";
-
 import {
   getAllApplications,
   updateApplicationStatus,
 } from "../../services/applicationsService";
-
 import "./adminDashboard.css";
 
-function AdminDashboard() {
+function adminDashboard() {
   const navigate = useNavigate();
-
   const { currentUser, loading: authLoading } = useAuth();
 
   const [users, setUsers] = useState([]);
   const [applications, setApplications] = useState([]);
-
   const [loading, setLoading] = useState(true);
   const [applicationsLoading, setApplicationsLoading] = useState(true);
-
   const [error, setError] = useState("");
   const [applicationError, setApplicationError] = useState("");
-
   const [actionLoading, setActionLoading] = useState(null);
 
   // =====================================================
@@ -67,7 +59,6 @@ function AdminDashboard() {
       }
     } catch (error) {
       console.error("LOAD USERS ERROR:", error);
-
       setError(error.message || "Failed to load registered users.");
     } finally {
       setLoading(false);
@@ -96,7 +87,6 @@ function AdminDashboard() {
       }
     } catch (error) {
       console.error("LOAD ADMIN APPLICATIONS ERROR:", error);
-
       setApplicationError(error.message || "Failed to load applications.");
     } finally {
       setApplicationsLoading(false);
@@ -155,7 +145,6 @@ function AdminDashboard() {
       alert("User deleted successfully.");
     } catch (error) {
       console.error("DELETE USER ERROR:", error);
-
       alert(error.message || "Failed to delete user.");
     } finally {
       setActionLoading(null);
@@ -189,7 +178,7 @@ function AdminDashboard() {
           String(application._id) === String(applicationId)
             ? {
                 ...application,
-                status: status,
+                status,
               }
             : application,
         ),
@@ -225,7 +214,6 @@ function AdminDashboard() {
     return (
       <div className="admin-page-loading">
         <div className="admin-loader"></div>
-
         <p>Checking admin access...</p>
       </div>
     );
@@ -244,7 +232,6 @@ function AdminDashboard() {
   // =====================================================
 
   const totalUsers = users.length;
-
   const totalApplications = applications.length;
 
   const totalAdmins = users.filter((user) => user.role === "admin").length;
@@ -272,9 +259,7 @@ function AdminDashboard() {
 
   return (
     <div className="admin-page">
-      {/* =================================================
-          HEADER
-      ================================================= */}
+      {/* HEADER */}
 
       <div className="admin-header">
         <div>
@@ -294,9 +279,7 @@ function AdminDashboard() {
         </button>
       </div>
 
-      {/* =================================================
-          MAIN STATISTICS
-      ================================================= */}
+      {/* STATISTICS */}
 
       <div className="admin-stats">
         <div className="admin-stat-card">
@@ -304,7 +287,6 @@ function AdminDashboard() {
 
           <div>
             <h2>{totalUsers}</h2>
-
             <p>Total Users</p>
           </div>
         </div>
@@ -314,7 +296,6 @@ function AdminDashboard() {
 
           <div>
             <h2>{totalApplications}</h2>
-
             <p>Total Applications</p>
           </div>
         </div>
@@ -324,7 +305,6 @@ function AdminDashboard() {
 
           <div>
             <h2>{totalAdmins}</h2>
-
             <p>Admins</p>
           </div>
         </div>
@@ -334,15 +314,12 @@ function AdminDashboard() {
 
           <div>
             <h2>{totalNormalUsers}</h2>
-
             <p>Normal Users</p>
           </div>
         </div>
       </div>
 
-      {/* =================================================
-          APPLICATION STATUS SUMMARY
-      ================================================= */}
+      {/* APPLICATION STATUS SUMMARY */}
 
       <div className="application-summary">
         <div className="summary-card pending-summary">
@@ -376,15 +353,12 @@ function AdminDashboard() {
         </div>
       </div>
 
-      {/* =================================================
-          ADMIN INFORMATION
-      ================================================= */}
+      {/* ADMIN INFORMATION */}
 
       <div className="admin-info-card">
         <div className="section-heading">
           <div>
             <h2>👑 Admin Information</h2>
-
             <p>Your administrator account</p>
           </div>
         </div>
@@ -392,33 +366,27 @@ function AdminDashboard() {
         <div className="admin-info-grid">
           <div className="admin-info-item">
             <span>Name</span>
-
             <strong>{currentUser.name}</strong>
           </div>
 
           <div className="admin-info-item">
             <span>Email</span>
-
             <strong>{currentUser.email}</strong>
           </div>
 
           <div className="admin-info-item">
             <span>Role</span>
-
             <strong className="role-admin">{currentUser.role}</strong>
           </div>
         </div>
       </div>
 
-      {/* =================================================
-          USERS
-      ================================================= */}
+      {/* USERS */}
 
       <div className="admin-section">
         <div className="section-heading">
           <div>
             <h2>👥 Registered Users</h2>
-
             <p>All users registered on your portal.</p>
           </div>
 
@@ -441,7 +409,6 @@ function AdminDashboard() {
         ) : users.length === 0 ? (
           <div className="empty-admin">
             <span>👤</span>
-
             <h3>No users found</h3>
           </div>
         ) : (
@@ -515,9 +482,7 @@ function AdminDashboard() {
         )}
       </div>
 
-      {/* =================================================
-          APPLICATIONS
-      ================================================= */}
+      {/* APPLICATIONS */}
 
       <div className="admin-section applications-section">
         <div className="section-heading">
@@ -535,7 +500,6 @@ function AdminDashboard() {
         {applicationsLoading ? (
           <div className="section-loading">
             <div className="admin-loader"></div>
-
             <p>Loading applications...</p>
           </div>
         ) : applicationError ? (
