@@ -1,14 +1,14 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 // =====================================================
-// GEMINI API KEY
+// GEMINI CONFIG
 // =====================================================
 
 const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
 
 if (!API_KEY) {
   console.error(
-    "❌ VITE_GEMINI_API_KEY is missing from frontend environment variables.",
+    "❌ VITE_GEMINI_API_KEY is missing from environment variables.",
   );
 }
 
@@ -19,44 +19,83 @@ if (!API_KEY) {
 const genAI = API_KEY ? new GoogleGenerativeAI(API_KEY) : null;
 
 // =====================================================
-// ANALYZE RESUME WITH GEMINI
+// MODELS
+// =====================================================
+
+// Current production models.
+// We try the primary model first and fallback if it
+// temporarily fails with 503/availability errors.
+
+const GEMINI_MODELS = ["gemini-3.6-flash"];
+
+// =====================================================
+// DELAY
+// =====================================================
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+// =====================================================
+// ERROR TYPE CHECK
+// =====================================================
+
+function isTemporaryError(error) {
+  const message = error?.message || error?.errorDetails?.[0]?.message || "";
+
+  const text = message.toLowerCase();
+
+  return (
+    text.includes("503") ||
+    text.includes("high demand") ||
+    text.includes("overloaded") ||
+    text.includes("temporarily unavailable") ||
+    text.includes("service unavailable") ||
+    text.includes("429") ||
+    text.includes("rate limit")
+  );
+}
+
+// =====================================================
+// ERROR MESSAGE
+// =====================================================
+
+function getGeminiErrorMessage(error) {
+  return (
+    error?.message ||
+    error?.errorDetails?.[0]?.message ||
+    "Unknown Gemini API error"
+  );
+}
+
+// =====================================================
+// ANALYZE RESUME
 // =====================================================
 
 export async function analyzeResumeWithAI(resumeText) {
-  // ---------------------------------------------
-  // Check API key
-  // ---------------------------------------------
+  // ---------------------------------------------------
+  // API KEY CHECK
+  // ---------------------------------------------------
 
   if (!API_KEY || !genAI) {
     throw new Error(
-      "Gemini API key is missing. Add VITE_GEMINI_API_KEY to Vercel Environment Variables.",
+      "Gemini API key is missing. Please configure VITE_GEMINI_API_KEY.",
     );
   }
 
-  // ---------------------------------------------
-  // Check resume text
-  // ---------------------------------------------
+  // ---------------------------------------------------
+  // RESUME CHECK
+  // ---------------------------------------------------
 
   if (!resumeText || resumeText.trim().length < 20) {
     throw new Error("Resume text is empty or too short for AI analysis.");
   }
 
-  try {
-    console.log("🤖 Starting Gemini Resume Analysis...");
+  // ---------------------------------------------------
+  // PROMPT
+  // ---------------------------------------------------
 
-    // ---------------------------------------------
-    // Gemini Model
-    // ---------------------------------------------
-
-    const model = genAI.getGenerativeModel({
-      model: "gemini-2.5-flash",
-    });
-
-    // ---------------------------------------------
-    // Prompt
-    // ---------------------------------------------
-
-    const prompt = `
+  const prompt = `
 You are an expert technical recruiter and ATS resume analyzer.
 
 Analyze the following resume carefully.
@@ -93,144 +132,180 @@ Final Recommendation:
 
 Tell the candidate what they should improve to become job-ready.
 
-Important Rules:
+IMPORTANT RULES:
 
-- Do not invent skills.
-- Do not assume technologies that are not mentioned.
-- Analyze only the provided resume.
-- Keep the response professional.
-- Keep the recommendations useful for a job seeker.
-- Give a realistic score between 0 and 100.
+1. Do not invent skills.
+2. Do not assume technologies that are not mentioned.
+3. Analyze only the provided resume.
+4. Give a realistic score between 0 and 100.
+5. Keep the response professional.
+6. Keep the response useful for a job seeker.
+7. Do not mention that you are an AI.
+8. Do not create fake experience.
+9. Do not create fake certifications.
+10. Do not create fake projects.
 
 Resume:
 
 ${resumeText}
 `;
 
-    console.log("📤 Sending resume to Gemini...");
+  console.log("🤖 Starting Gemini Resume Analysis...");
 
-    // ---------------------------------------------
-    // Send request
-    // ---------------------------------------------
+  // ===================================================
+  // TRY EACH MODEL
+  // ===================================================
 
-    const result = await model.generateContent(prompt);
+  let lastError = null;
 
-    const response = result.response;
+  for (const modelName of GEMINI_MODELS) {
+    console.log(`🤖 Trying Gemini model: ${modelName}`);
 
-    const text = response.text();
+    try {
+      const model = genAI.getGenerativeModel({
+        model: modelName,
+      });
 
-    // ---------------------------------------------
-    // Validate response
-    // ---------------------------------------------
+      // ------------------------------------------------
+      // RETRY CURRENT MODEL
+      // ------------------------------------------------
 
-    if (!text || !text.trim()) {
-      throw new Error("Gemini returned an empty response.");
-    }
+      for (let attempt = 1; attempt <= 2; attempt++) {
+        try {
+          console.log(`📤 Gemini request: ${modelName} | Attempt ${attempt}`);
 
-    console.log("✅ Gemini Resume Analysis Completed");
+          const result = await model.generateContent(prompt);
 
-    return text;
-  } catch (error) {
-    console.error("❌ GEMINI API ERROR:", error);
+          const response = result.response;
 
-    const errorMessage =
-      error?.message ||
-      error?.errorDetails?.[0]?.message ||
-      "Unknown Gemini API error";
+          const text = response.text();
 
-    console.error("❌ Gemini Error Message:", errorMessage);
+          if (!text || !text.trim()) {
+            throw new Error("Gemini returned an empty response.");
+          }
 
-    const message = errorMessage.toLowerCase();
+          console.log(`✅ Gemini Resume Analysis Completed using ${modelName}`);
 
-    // =================================================
-    // 503 - MODEL BUSY / HIGH DEMAND
-    // =================================================
+          return text;
+        } catch (error) {
+          lastError = error;
 
-    if (
-      message.includes("503") ||
-      message.includes("high demand") ||
-      message.includes("unavailable") ||
-      message.includes("overloaded")
-    ) {
-      throw new Error(
-        "Gemini AI is temporarily busy. Please wait a few seconds and try again.",
+          const errorMessage = getGeminiErrorMessage(error);
+
+          console.error(`❌ ${modelName} attempt ${attempt}:`, errorMessage);
+
+          // --------------------------------------------
+          // TEMPORARY ERROR
+          // --------------------------------------------
+
+          if (isTemporaryError(error)) {
+            if (attempt < 2) {
+              console.log(
+                `⏳ ${modelName} temporarily unavailable. Retrying...`,
+              );
+
+              await sleep(1500);
+
+              continue;
+            }
+
+            console.log(
+              `⚠️ ${modelName} failed after retries. Trying fallback model...`,
+            );
+
+            break;
+          }
+
+          // --------------------------------------------
+          // NON-TEMPORARY ERROR
+          // --------------------------------------------
+
+          const message = errorMessage.toLowerCase();
+
+          // Invalid API key
+          if (
+            message.includes("api key") ||
+            message.includes("invalid api key") ||
+            message.includes("api_key")
+          ) {
+            throw new Error(
+              "Gemini API key is invalid. Check VITE_GEMINI_API_KEY.",
+            );
+          }
+
+          // Permission
+          if (
+            message.includes("403") ||
+            message.includes("permission denied") ||
+            message.includes("permission")
+          ) {
+            throw new Error(
+              "Gemini API permission denied. Check your Google AI API key and project.",
+            );
+          }
+
+          // Model unavailable
+          if (
+            message.includes("404") ||
+            message.includes("not found") ||
+            message.includes("no longer available")
+          ) {
+            console.warn(
+              `⚠️ ${modelName} is unavailable. Trying next model...`,
+            );
+
+            break;
+          }
+
+          // Other error
+          throw new Error(`Gemini AI analysis failed: ${errorMessage}`);
+        }
+      }
+    } catch (error) {
+      lastError = error;
+
+      console.error(
+        `❌ Model ${modelName} failed:`,
+        getGeminiErrorMessage(error),
       );
+
+      // Don't continue for authentication errors
+      const message = getGeminiErrorMessage(error).toLowerCase();
+
+      if (message.includes("api key") || message.includes("permission")) {
+        throw error;
+      }
+
+      // Otherwise try next model
+      continue;
     }
-
-    // =================================================
-    // API KEY ERROR
-    // =================================================
-
-    if (
-      message.includes("api key") ||
-      message.includes("invalid api key") ||
-      message.includes("api_key")
-    ) {
-      throw new Error(
-        "Gemini API key is invalid. Check VITE_GEMINI_API_KEY in Vercel.",
-      );
-    }
-
-    // =================================================
-    // QUOTA / RATE LIMIT
-    // =================================================
-
-    if (
-      message.includes("quota") ||
-      message.includes("429") ||
-      message.includes("rate limit")
-    ) {
-      throw new Error(
-        "Gemini API quota or rate limit exceeded. Please try again later.",
-      );
-    }
-
-    // =================================================
-    // MODEL NOT FOUND
-    // =================================================
-
-    if (
-      message.includes("404") ||
-      message.includes("not found") ||
-      message.includes("model")
-    ) {
-      throw new Error(
-        "Gemini model is unavailable. Please check the configured Gemini model.",
-      );
-    }
-
-    // =================================================
-    // PERMISSION ERROR
-    // =================================================
-
-    if (
-      message.includes("403") ||
-      message.includes("permission") ||
-      message.includes("permission denied")
-    ) {
-      throw new Error(
-        "Gemini API permission denied. Check your API key and Google AI project.",
-      );
-    }
-
-    // =================================================
-    // NETWORK ERROR
-    // =================================================
-
-    if (
-      message.includes("network") ||
-      message.includes("fetch") ||
-      message.includes("failed to fetch")
-    ) {
-      throw new Error(
-        "Unable to connect to Gemini AI. Please check your internet connection and try again.",
-      );
-    }
-
-    // =================================================
-    // GENERIC ERROR
-    // =================================================
-
-    throw new Error(`Gemini AI analysis failed: ${errorMessage}`);
   }
+
+  // ===================================================
+  // ALL MODELS FAILED
+  // ===================================================
+
+  console.error("❌ All Gemini models failed.", lastError);
+
+  const finalMessage = getGeminiErrorMessage(lastError);
+
+  if (
+    finalMessage.includes("503") ||
+    finalMessage.toLowerCase().includes("high demand")
+  ) {
+    throw new Error(
+      "Gemini AI is temporarily busy. Please wait 10-20 seconds and try again.",
+    );
+  }
+
+  if (
+    finalMessage.includes("429") ||
+    finalMessage.toLowerCase().includes("quota")
+  ) {
+    throw new Error(
+      "Gemini API quota/rate limit reached. Please try again later.",
+    );
+  }
+
+  throw new Error(`Gemini AI analysis failed: ${finalMessage}`);
 }
