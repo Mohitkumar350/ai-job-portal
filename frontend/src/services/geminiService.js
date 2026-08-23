@@ -7,7 +7,9 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
 
 if (!API_KEY) {
-  console.error("❌ VITE_GEMINI_API_KEY is missing from frontend/.env");
+  console.error(
+    "❌ VITE_GEMINI_API_KEY is missing from frontend environment variables.",
+  );
 }
 
 // =====================================================
@@ -21,11 +23,19 @@ const genAI = API_KEY ? new GoogleGenerativeAI(API_KEY) : null;
 // =====================================================
 
 export async function analyzeResumeWithAI(resumeText) {
-  if (!API_KEY) {
+  // ---------------------------------------------
+  // Check API key
+  // ---------------------------------------------
+
+  if (!API_KEY || !genAI) {
     throw new Error(
-      "Gemini API key is missing. Check your frontend .env file.",
+      "Gemini API key is missing. Add VITE_GEMINI_API_KEY to Vercel Environment Variables.",
     );
   }
+
+  // ---------------------------------------------
+  // Check resume text
+  // ---------------------------------------------
 
   if (!resumeText || resumeText.trim().length < 20) {
     throw new Error("Resume text is empty or too short for AI analysis.");
@@ -34,10 +44,17 @@ export async function analyzeResumeWithAI(resumeText) {
   try {
     console.log("🤖 Starting Gemini Resume Analysis...");
 
-    // Current Flash model
+    // ---------------------------------------------
+    // Gemini Model
+    // ---------------------------------------------
+
     const model = genAI.getGenerativeModel({
-      model: "gemini-3.6-flash",
+      model: "gemini-2.5-flash",
     });
+
+    // ---------------------------------------------
+    // Prompt
+    // ---------------------------------------------
 
     const prompt = `
 You are an expert technical recruiter and ATS resume analyzer.
@@ -49,42 +66,62 @@ Return the result using exactly this structure:
 Overall Resume Score: XX/100
 
 Candidate Summary:
+
 Write a short professional summary of the candidate.
 
 Technical Skills:
+
 - List the important technical skills found in the resume.
 
 Strengths:
+
 - Give 3 to 5 important strengths.
 
 Weaknesses:
+
 - Give 3 to 5 realistic weaknesses or missing areas.
 
 ATS Improvements:
+
 - Give practical ATS optimization suggestions.
 
 Project Improvements:
+
 - Give practical improvements for the candidate's projects.
 
 Final Recommendation:
+
 Tell the candidate what they should improve to become job-ready.
 
-Important:
-- Do not invent skills that are not present in the resume.
-- Base your analysis only on the resume text.
-- Keep the response professional and useful for a job seeker.
+Important Rules:
+
+- Do not invent skills.
+- Do not assume technologies that are not mentioned.
+- Analyze only the provided resume.
+- Keep the response professional.
+- Keep the recommendations useful for a job seeker.
+- Give a realistic score between 0 and 100.
 
 Resume:
+
 ${resumeText}
 `;
 
     console.log("📤 Sending resume to Gemini...");
+
+    // ---------------------------------------------
+    // Send request
+    // ---------------------------------------------
 
     const result = await model.generateContent(prompt);
 
     const response = result.response;
 
     const text = response.text();
+
+    // ---------------------------------------------
+    // Validate response
+    // ---------------------------------------------
 
     if (!text || !text.trim()) {
       throw new Error("Gemini returned an empty response.");
@@ -96,10 +133,6 @@ ${resumeText}
   } catch (error) {
     console.error("❌ GEMINI API ERROR:", error);
 
-    // ==========================================
-    // SHOW ACTUAL ERROR
-    // ==========================================
-
     const errorMessage =
       error?.message ||
       error?.errorDetails?.[0]?.message ||
@@ -107,43 +140,97 @@ ${resumeText}
 
     console.error("❌ Gemini Error Message:", errorMessage);
 
+    const message = errorMessage.toLowerCase();
+
+    // =================================================
+    // 503 - MODEL BUSY / HIGH DEMAND
+    // =================================================
+
+    if (
+      message.includes("503") ||
+      message.includes("high demand") ||
+      message.includes("unavailable") ||
+      message.includes("overloaded")
+    ) {
+      throw new Error(
+        "Gemini AI is temporarily busy. Please wait a few seconds and try again.",
+      );
+    }
+
+    // =================================================
     // API KEY ERROR
+    // =================================================
+
     if (
-      errorMessage.toLowerCase().includes("api key") ||
-      errorMessage.toLowerCase().includes("invalid")
+      message.includes("api key") ||
+      message.includes("invalid api key") ||
+      message.includes("api_key")
     ) {
-      throw new Error("Gemini API key is invalid. Check VITE_GEMINI_API_KEY.");
+      throw new Error(
+        "Gemini API key is invalid. Check VITE_GEMINI_API_KEY in Vercel.",
+      );
     }
 
-    // QUOTA ERROR
+    // =================================================
+    // QUOTA / RATE LIMIT
+    // =================================================
+
     if (
-      errorMessage.toLowerCase().includes("quota") ||
-      errorMessage.toLowerCase().includes("429")
+      message.includes("quota") ||
+      message.includes("429") ||
+      message.includes("rate limit")
     ) {
-      throw new Error("Gemini API quota exceeded. Please try again later.");
+      throw new Error(
+        "Gemini API quota or rate limit exceeded. Please try again later.",
+      );
     }
 
-    // MODEL ERROR
+    // =================================================
+    // MODEL NOT FOUND
+    // =================================================
+
     if (
-      errorMessage.toLowerCase().includes("model") ||
-      errorMessage.toLowerCase().includes("404")
+      message.includes("404") ||
+      message.includes("not found") ||
+      message.includes("model")
     ) {
       throw new Error(
         "Gemini model is unavailable. Please check the configured Gemini model.",
       );
     }
 
+    // =================================================
     // PERMISSION ERROR
+    // =================================================
+
     if (
-      errorMessage.toLowerCase().includes("permission") ||
-      errorMessage.toLowerCase().includes("403")
+      message.includes("403") ||
+      message.includes("permission") ||
+      message.includes("permission denied")
     ) {
       throw new Error(
-        "Gemini API permission denied. Check your API key and project settings.",
+        "Gemini API permission denied. Check your API key and Google AI project.",
       );
     }
 
-    // OTHER ERROR
+    // =================================================
+    // NETWORK ERROR
+    // =================================================
+
+    if (
+      message.includes("network") ||
+      message.includes("fetch") ||
+      message.includes("failed to fetch")
+    ) {
+      throw new Error(
+        "Unable to connect to Gemini AI. Please check your internet connection and try again.",
+      );
+    }
+
+    // =================================================
+    // GENERIC ERROR
+    // =================================================
+
     throw new Error(`Gemini AI analysis failed: ${errorMessage}`);
   }
 }
