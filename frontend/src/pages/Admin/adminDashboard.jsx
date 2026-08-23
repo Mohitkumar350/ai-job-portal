@@ -10,7 +10,7 @@ import {
   updateApplicationStatus,
 } from "../../services/applicationsService";
 
-import "./AdminDashboard.css";
+import "./adminDashboard.css";
 
 function AdminDashboard() {
   const navigate = useNavigate();
