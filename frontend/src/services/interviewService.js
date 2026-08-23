@@ -1,358 +1,717 @@
-import { GoogleGenAI } from "@google/genai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import questionBank from "../questionBank.js";
 
-// =====================================================
-// GEMINI CONFIG
-// =====================================================
+/* ============================================================
+   GEMINI CONFIG
+   ============================================================ */
 
 const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
 
 if (!API_KEY) {
-  console.error(
-    "❌ VITE_GEMINI_API_KEY is missing from environment variables.",
-  );
+  console.warn("⚠️ VITE_GEMINI_API_KEY is missing.");
 }
 
-// =====================================================
-// GEMINI CLIENT
-// =====================================================
+const genAI = API_KEY ? new GoogleGenerativeAI(API_KEY) : null;
 
-const ai = API_KEY
-  ? new GoogleGenAI({
-      apiKey: API_KEY,
-    })
-  : null;
+/*
+  IMPORTANT:
+  Use a model actually available to your Gemini API key.
+*/
+ const GEMINI_MODEL = "gemini-3.6-flash";/* ============================================================
+   HELPERS
+   ============================================================ */
 
-// =====================================================
-// GEMINI MODEL
-// =====================================================
-
-const GEMINI_MODEL = "gemini-3.6-flash";
-
-// =====================================================
-// HELPER
-// =====================================================
-
-const sleep = (ms) => {
+function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
-};
-
-// =====================================================
-// ERROR MESSAGE
-// =====================================================
+}
 
 function getErrorMessage(error) {
   return (
     error?.message ||
     error?.errorDetails?.[0]?.message ||
-    "Unknown Gemini API error"
+    "Unknown Gemini error"
   );
 }
 
-// =====================================================
-// TEMPORARY ERROR
-// =====================================================
-
-function isTemporaryError(error) {
+function isQuotaError(error) {
   const message = getErrorMessage(error).toLowerCase();
 
   return (
     message.includes("429") ||
-    message.includes("500") ||
-    message.includes("503") ||
     message.includes("quota") ||
-    message.includes("rate limit") ||
-    message.includes("overloaded") ||
-    message.includes("high demand") ||
-    message.includes("temporarily unavailable")
+    message.includes("rate limit")
   );
 }
 
-// =====================================================
-// NORMALIZE ERROR
-// =====================================================
+function isModelError(error) {
+  const message = getErrorMessage(error).toLowerCase();
 
-function normalizeGeminiError(error) {
-  const message = getErrorMessage(error);
-  const lower = message.toLowerCase();
-
-  if (
-    lower.includes("api key") ||
-    lower.includes("invalid api key") ||
-    lower.includes("api_key")
-  ) {
-    return new Error(
-      "Gemini API key is invalid or missing. Check VITE_GEMINI_API_KEY.",
-    );
-  }
-
-  if (
-    lower.includes("403") ||
-    lower.includes("permission denied") ||
-    lower.includes("permission")
-  ) {
-    return new Error(
-      "Gemini API permission denied. Check your Google AI API key.",
-    );
-  }
-
-  if (lower.includes("404") || lower.includes("not found")) {
-    return new Error("Gemini model is unavailable for this API account.");
-  }
-
-  if (
-    lower.includes("429") ||
-    lower.includes("quota") ||
-    lower.includes("rate limit")
-  ) {
-    return new Error(
-      "Gemini API quota/rate limit reached. Please try again later.",
-    );
-  }
-
-  if (
-    lower.includes("503") ||
-    lower.includes("overloaded") ||
-    lower.includes("high demand") ||
-    lower.includes("temporarily unavailable")
-  ) {
-    return new Error("Gemini AI is temporarily busy. Please try again.");
-  }
-
-  return new Error(`Gemini AI error: ${message}`);
+  return (
+    message.includes("404") ||
+    message.includes("not found") ||
+    message.includes("no longer available") ||
+    message.includes("model")
+  );
 }
 
-// =====================================================
-// GENERATE CONTENT
-// =====================================================
+/* ============================================================
+   QUESTION BANK
+   ============================================================ */
 
-async function generateContent(prompt, maxRetries = 3) {
-  if (!API_KEY || !ai) {
-    throw new Error(
-      "Gemini API key is missing. Configure VITE_GEMINI_API_KEY.",
-    );
+function getQuestionsForRole(role, difficulty) {
+  if (!questionBank) {
+    return [];
   }
 
-  let lastError = null;
+  const normalizedRole = String(role || "")
+    .trim()
+    .toLowerCase();
+  const normalizedDifficulty = String(difficulty || "")
+    .trim()
+    .toLowerCase();
 
-  for (let attempt = 1; attempt <= maxRetries; attempt++) {
-    try {
-      console.log(
-        `🤖 Gemini request | ${GEMINI_MODEL} | Attempt ${attempt}/${maxRetries}`,
-      );
+  /* ----------------------------------------------------------
+     Structure:
+     {
+       "Frontend Developer": {
+         "Beginner": [...]
+       }
+     }
+  ---------------------------------------------------------- */
 
-      const response = await ai.models.generateContent({
-        model: GEMINI_MODEL,
-        contents: prompt,
-      });
+  if (
+    questionBank[role] &&
+    questionBank[role][difficulty] &&
+    Array.isArray(questionBank[role][difficulty])
+  ) {
+    return questionBank[role][difficulty];
+  }
 
-      const text = response.text?.trim();
+  /* ----------------------------------------------------------
+     Case-insensitive role
+  ---------------------------------------------------------- */
 
-      if (!text) {
-        throw new Error("Gemini returned an empty response.");
+  if (!Array.isArray(questionBank)) {
+    const roleKey = Object.keys(questionBank).find(
+      (key) => key.toLowerCase() === normalizedRole,
+    );
+
+    if (roleKey) {
+      if (
+        questionBank[roleKey] &&
+        questionBank[roleKey][difficulty] &&
+        Array.isArray(questionBank[roleKey][difficulty])
+      ) {
+        return questionBank[roleKey][difficulty];
       }
 
-      console.log("✅ Gemini response received");
-
-      return text;
-    } catch (error) {
-      lastError = error;
-
-      console.error(`❌ Gemini attempt ${attempt}:`, getErrorMessage(error));
-
-      if (isTemporaryError(error) && attempt < maxRetries) {
-        const waitTime = attempt * 2000;
-
-        console.log(`⏳ Retrying Gemini in ${waitTime}ms...`);
-
-        await sleep(waitTime);
-        continue;
-      }
-
-      if (!isTemporaryError(error)) {
-        throw normalizeGeminiError(error);
+      if (Array.isArray(questionBank[roleKey])) {
+        return questionBank[roleKey];
       }
     }
   }
 
-  throw normalizeGeminiError(lastError);
+  /* ----------------------------------------------------------
+     Flat array structure
+  ---------------------------------------------------------- */
+
+  if (Array.isArray(questionBank)) {
+    return questionBank.filter((item) => {
+      if (!item || typeof item !== "object") {
+        return true;
+      }
+
+      const itemRole = String(item.role || "").toLowerCase();
+      const itemDifficulty = String(item.difficulty || "").toLowerCase();
+
+      return (
+        (!itemRole || itemRole === normalizedRole) &&
+        (!itemDifficulty || itemDifficulty === normalizedDifficulty)
+      );
+    });
+  }
+
+  return [];
 }
 
-// =====================================================
-// GENERATE INTERVIEW QUESTION
-// =====================================================
+/* ============================================================
+   EXTRACT QUESTION
+   ============================================================ */
 
-export async function generateQuestion(role, difficulty) {
-  if (!role) {
-    throw new Error("Interview role is required.");
+function extractQuestion(item) {
+  if (typeof item === "string") {
+    return item;
   }
 
-  if (!difficulty) {
-    throw new Error("Interview difficulty is required.");
+  if (item?.question) {
+    return item.question;
   }
+
+  if (item?.text) {
+    return item.text;
+  }
+
+  if (item?.title) {
+    return item.title;
+  }
+
+  return "";
+}
+
+/* ============================================================
+   RANDOM QUESTION
+   ============================================================ */
+
+export function getRandomQuestion(
+  role = "Frontend Developer",
+  difficulty = "Beginner",
+  usedQuestions = [],
+) {
+  const questions = getQuestionsForRole(role, difficulty);
+
+  if (!questions.length) {
+    return null;
+  }
+
+  const used = new Set(
+    usedQuestions.map((q) => String(q).trim().toLowerCase()),
+  );
+
+  const availableQuestions = questions.filter((item) => {
+    const question = extractQuestion(item);
+
+    return question && !used.has(String(question).trim().toLowerCase());
+  });
+
+  const pool = availableQuestions.length > 0 ? availableQuestions : questions;
+
+  const randomIndex = Math.floor(Math.random() * pool.length);
+
+  return extractQuestion(pool[randomIndex]);
+}
+
+/* ============================================================
+   GEMINI GENERATION
+   ============================================================ */
+
+async function generateWithGemini(prompt) {
+  if (!API_KEY || !genAI) {
+    throw new Error(
+      "Gemini API key is missing. Add VITE_GEMINI_API_KEY to frontend/.env",
+    );
+  }
+
+  const model = genAI.getGenerativeModel({
+    model: GEMINI_MODEL,
+  });
+
+  for (let attempt = 1; attempt <= 2; attempt++) {
+    try {
+      console.log(`🤖 Gemini request attempt ${attempt} using ${GEMINI_MODEL}`);
+
+      const result = await model.generateContent(prompt);
+
+      const response = result.response;
+      const text = response.text();
+
+      if (!text || !text.trim()) {
+        throw new Error("Gemini returned an empty response.");
+      }
+
+      return text.trim();
+    } catch (error) {
+      console.error(`❌ Gemini attempt ${attempt}:`, getErrorMessage(error));
+
+      if (isQuotaError(error)) {
+        if (attempt < 2) {
+          await sleep(1500);
+          continue;
+        }
+
+        throw new Error(
+          "Gemini API quota/rate limit reached. Please try again later.",
+        );
+      }
+
+      if (isModelError(error)) {
+        throw new Error(
+          `Gemini model "${GEMINI_MODEL}" is unavailable for this API key.`,
+        );
+      }
+
+      throw error;
+    }
+  }
+
+  throw new Error("Gemini request failed.");
+}
+
+/* ============================================================
+   GENERATE QUESTION
+   ============================================================ */
+
+export async function generateQuestion(
+  role = "Frontend Developer",
+  difficulty = "Beginner",
+  usedQuestions = [],
+) {
+  /* ----------------------------------------------------------
+     First use question bank
+  ---------------------------------------------------------- */
+
+  const localQuestion = getRandomQuestion(role, difficulty, usedQuestions);
+
+  if (localQuestion) {
+    console.log("✅ Question loaded from question bank");
+    return localQuestion;
+  }
+
+  /* ----------------------------------------------------------
+     Gemini fallback
+  ---------------------------------------------------------- */
 
   const prompt = `
 You are a professional technical interviewer.
 
-Job Role: ${role}
+Generate ONE technical interview question.
+
+Role: ${role}
 Difficulty: ${difficulty}
 
-Generate exactly ONE technical interview question.
-
 Rules:
-- Return ONLY the question.
+- Return ONLY the interview question.
+- Do not write "Question:".
 - Do not provide the answer.
-- Do not number the question.
-- Do not ask multiple questions.
-- Keep it clear and professional.
+- Do not provide explanation.
 - Make it relevant to the selected role.
-- The question should be suitable for a real technical interview.
-
-Example format:
-
-What is the difference between var, let, and const in JavaScript?
 `;
 
   try {
-    const question = await generateContent(prompt);
+    const question = await generateWithGemini(prompt);
 
-    return question.replace(/^["']|["']$/g, "").trim();
+    return question.replace(/^question\s*:\s*/i, "").trim();
   } catch (error) {
     console.error("❌ Generate Question Error:", error);
-    throw error;
+
+    return getFallbackQuestion(role, difficulty);
   }
 }
 
-// =====================================================
-// EVALUATE ANSWER
-// =====================================================
+/* ============================================================
+   FALLBACK QUESTIONS
+   ============================================================ */
+
+function getFallbackQuestion(role, difficulty) {
+  const fallbackQuestions = {
+    "Frontend Developer": {
+      Beginner: "What is the difference between HTML, CSS, and JavaScript?",
+
+      Intermediate:
+        "What is the difference between localStorage, sessionStorage, and cookies?",
+
+      Advanced:
+        "How would you optimize the performance of a large frontend application?",
+    },
+
+    "React Developer": {
+      Beginner: "What are props and state in React?",
+
+      Intermediate: "Explain the difference between useMemo and useCallback.",
+
+      Advanced:
+        "How would you design a scalable React application with complex state management?",
+    },
+
+    "JavaScript Developer": {
+      Beginner: "What is the difference between let, const, and var?",
+
+      Intermediate: "Explain closures in JavaScript with an example.",
+
+      Advanced:
+        "Explain the JavaScript event loop and how asynchronous operations are handled.",
+    },
+
+    "Backend Developer": {
+      Beginner:
+        "What is the difference between frontend and backend development?",
+
+      Intermediate: "What is middleware in a backend application?",
+
+      Advanced:
+        "How would you design a scalable REST API for millions of users?",
+    },
+
+    "Node.js Developer": {
+      Beginner: "What is Node.js and why is it used?",
+
+      Intermediate: "Explain the Node.js event loop.",
+
+      Advanced:
+        "How would you improve the scalability of a Node.js application?",
+    },
+
+    "Java Developer": {
+      Beginner: "What is the difference between a class and an object in Java?",
+
+      Intermediate:
+        "Explain inheritance, polymorphism, encapsulation, and abstraction.",
+
+      Advanced: "How would you design a scalable Java backend application?",
+    },
+
+    "Python Developer": {
+      Beginner: "What are lists, tuples, sets, and dictionaries in Python?",
+
+      Intermediate: "Explain decorators and generators in Python.",
+
+      Advanced:
+        "How would you optimize a Python application that processes millions of records?",
+    },
+
+    "Full Stack Developer": {
+      Beginner:
+        "What is the difference between frontend, backend, and database layers?",
+
+      Intermediate:
+        "How does a request travel from a React frontend to a backend API and database?",
+
+      Advanced:
+        "How would you architect a scalable full-stack web application?",
+    },
+  };
+
+  return (
+    fallbackQuestions[role]?.[difficulty] ||
+    "Explain an important technical concept related to your selected role."
+  );
+}
+
+/* ============================================================
+   EVALUATE ANSWER
+   ============================================================ */
 
 export async function evaluateAnswer(question, answer) {
   if (!question) {
-    throw new Error("Interview question is required.");
+    throw new Error("Question is missing.");
   }
 
-  if (!answer || !answer.trim()) {
-    answer = "No answer submitted.";
-  }
+  const finalAnswer = answer?.trim() || "No answer submitted.";
 
   const prompt = `
-You are an experienced software engineering interviewer.
-
-Interview Question:
-${question}
-
-Candidate Answer:
-${answer}
+You are a strict but fair technical interviewer.
 
 Evaluate the candidate's answer.
 
+Question:
+${question}
+
+Candidate Answer:
+${finalAnswer}
+
 Return ONLY valid JSON.
 
-Use exactly this structure:
-
+Format:
 {
-  "score": 8,
-  "strengths": [
-    "Good understanding of the concept",
-    "Used appropriate technical terminology"
-  ],
-  "improvements": [
-    "Add a practical example",
-    "Explain the concept in more technical depth"
-  ],
-  "feedback": "Overall feedback about the candidate's answer.",
-  "correctAnswer": "An ideal interview answer in 4 to 6 sentences."
+  "score": 0,
+  "strengths": [],
+  "improvements": [],
+  "feedback": "",
+  "correctAnswer": ""
 }
 
 Rules:
-
-- score must be an integer from 0 to 10.
-- strengths must be an array.
-- improvements must be an array.
-- feedback must be a string.
-- correctAnswer must be a string.
-- Return ONLY JSON.
-- Do not use Markdown.
-- Do not use code fences.
+1. Score must be between 0 and 10.
+2. Evaluate technical correctness.
+3. Evaluate clarity.
+4. Evaluate completeness.
+5. Do not invent candidate experience.
+6. strengths should contain 2-4 points.
+7. improvements should contain 2-4 points.
+8. feedback should be practical.
+9. correctAnswer should explain an ideal answer.
+10. Return JSON only.
 `;
 
   try {
-    const text = await generateContent(prompt);
+    const text = await generateWithGemini(prompt);
 
-    let cleanText = text.trim();
-
-    // Remove accidental markdown fences
-    cleanText = cleanText
-      .replace(/^```json\s*/i, "")
-      .replace(/^```\s*/i, "")
-      .replace(/\s*```$/i, "")
-      .trim();
-
-    const evaluation = JSON.parse(cleanText);
-
-    const score = Number(evaluation.score);
-
-    return {
-      score: Number.isFinite(score)
-        ? Math.max(0, Math.min(10, Math.round(score)))
-        : 0,
-
-      strengths: Array.isArray(evaluation.strengths)
-        ? evaluation.strengths
-        : [],
-
-      improvements: Array.isArray(evaluation.improvements)
-        ? evaluation.improvements
-        : [],
-
-      feedback:
-        typeof evaluation.feedback === "string"
-          ? evaluation.feedback
-          : "No feedback available.",
-
-      correctAnswer:
-        typeof evaluation.correctAnswer === "string"
-          ? evaluation.correctAnswer
-          : "No ideal answer available.",
-    };
+    return parseEvaluation(text);
   } catch (error) {
-    console.error("❌ Evaluate Answer Error:", error);
+    console.error("❌ Evaluation Error:", error);
 
     return {
       score: 0,
-      strengths: [],
-      improvements: [],
-      feedback: error?.message || "Unable to evaluate the answer.",
-      correctAnswer: "Not available.",
+
+      strengths: ["Answer was submitted successfully."],
+
+      improvements: [
+        "AI evaluation is temporarily unavailable.",
+        "Please try again later.",
+      ],
+
+      feedback: "The AI evaluation service is temporarily unavailable.",
+
+      correctAnswer:
+        "Please try again when the AI evaluation service is available.",
     };
   }
 }
 
-// =====================================================
-// SCHEDULED INTERVIEW API
-// =====================================================
+/* ============================================================
+   PARSE GEMINI JSON
+   ============================================================ */
 
-const SCHEDULING_API_URL = `${
-  import.meta.env.VITE_API_URL || "http://localhost:5000"
-}/api/interviews`;
+function parseEvaluation(text) {
+  let cleanText = String(text || "").trim();
 
-// =====================================================
-// SCHEDULING REQUEST
-// =====================================================
-
-async function schedulingRequest(path = "", options = {}) {
-  const token = localStorage.getItem("token");
-
-  if (!token) {
-    throw new Error("Please login first.");
-  }
+  cleanText = cleanText
+    .replace(/^```json/i, "")
+    .replace(/^```/i, "")
+    .replace(/```$/i, "")
+    .trim();
 
   try {
-    const response = await fetch(`${SCHEDULING_API_URL}${path}`, {
+    const parsed = JSON.parse(cleanText);
+
+    return {
+      score: normalizeScore(parsed.score),
+
+      strengths: Array.isArray(parsed.strengths) ? parsed.strengths : [],
+
+      improvements: Array.isArray(parsed.improvements)
+        ? parsed.improvements
+        : [],
+
+      feedback: parsed.feedback || "No detailed feedback was provided.",
+
+      correctAnswer: parsed.correctAnswer || "No ideal answer was provided.",
+    };
+  } catch (error) {
+    console.error("❌ Could not parse Gemini evaluation:", error);
+
+    return {
+      score: 0,
+
+      strengths: [],
+
+      improvements: ["The AI response could not be parsed correctly."],
+
+      feedback: cleanText,
+
+      correctAnswer:
+        "Please review the question and provide a technically complete answer.",
+    };
+  }
+}
+
+/* ============================================================
+   NORMALIZE SCORE
+   ============================================================ */
+
+function normalizeScore(score) {
+  const number = Number(score);
+
+  if (Number.isNaN(number)) {
+    return 0;
+  }
+
+  return Math.max(0, Math.min(10, number));
+}
+
+/* ============================================================
+   INTERVIEW SESSION
+   ============================================================ */
+
+let interviewSession = {
+  role: "Frontend Developer",
+  difficulty: "Beginner",
+  totalQuestions: 5,
+  currentQuestion: 0,
+  questions: [],
+  answers: [],
+  scores: [],
+  startedAt: null,
+};
+
+/* ============================================================
+   START INTERVIEW SESSION
+   ============================================================ */
+
+export async function startInterviewSession(
+  role = "Frontend Developer",
+  difficulty = "Beginner",
+  totalQuestions = 5,
+) {
+  const questions = [];
+
+  const availableQuestions = getQuestionsForRole(role, difficulty);
+
+  /* ----------------------------------------------------------
+     Shuffle question bank
+  ---------------------------------------------------------- */
+
+  const shuffled = [...availableQuestions].sort(() => Math.random() - 0.5);
+
+  /* ----------------------------------------------------------
+     Add local questions
+  ---------------------------------------------------------- */
+
+  for (let i = 0; i < Math.min(totalQuestions, shuffled.length); i++) {
+    const question = extractQuestion(shuffled[i]);
+
+    if (question) {
+      questions.push(question);
+    }
+  }
+
+  /* ----------------------------------------------------------
+     Generate additional questions if needed
+  ---------------------------------------------------------- */
+
+  let attempts = 0;
+
+  while (questions.length < totalQuestions && attempts < 10) {
+    attempts++;
+
+    const question = await generateQuestion(role, difficulty, questions);
+
+    if (!question) {
+      break;
+    }
+
+    const exists = questions.some(
+      (q) => q.trim().toLowerCase() === question.trim().toLowerCase(),
+    );
+
+    if (!exists) {
+      questions.push(question);
+    }
+  }
+
+  interviewSession = {
+    role,
+    difficulty,
+
+    totalQuestions: questions.length || totalQuestions,
+
+    currentQuestion: 0,
+
+    questions,
+
+    answers: [],
+
+    scores: [],
+
+    startedAt: Date.now(),
+  };
+
+  return {
+    success: true,
+    ...interviewSession,
+    firstQuestion: questions[0] || null,
+  };
+}
+
+/* ============================================================
+   GET NEXT INTERVIEW QUESTION
+   ============================================================ */
+
+export async function getNextInterviewQuestion() {
+  const session = interviewSession;
+
+  if (!session.questions.length) {
+    return generateQuestion(session.role, session.difficulty);
+  }
+
+  if (session.currentQuestion >= session.questions.length) {
+    return null;
+  }
+
+  const question = session.questions[session.currentQuestion];
+
+  session.currentQuestion += 1;
+
+  return question;
+}
+
+/* ============================================================
+   SAVE INTERVIEW ANSWER
+   ============================================================ */
+
+export function saveInterviewAnswer(answer, score = null) {
+  interviewSession.answers.push({
+    answer,
+    score,
+  });
+
+  if (score !== null) {
+    interviewSession.scores.push(Number(score));
+  }
+
+  return interviewSession;
+}
+
+/* ============================================================
+   GET INTERVIEW SESSION
+   ============================================================ */
+
+export function getInterviewSession() {
+  return interviewSession;
+}
+
+/* ============================================================
+   RESET INTERVIEW SESSION
+   ============================================================ */
+
+export function resetInterviewSession() {
+  interviewSession = {
+    role: "Frontend Developer",
+    difficulty: "Beginner",
+    totalQuestions: 5,
+    currentQuestion: 0,
+    questions: [],
+    answers: [],
+    scores: [],
+    startedAt: null,
+  };
+
+  return interviewSession;
+}
+
+/* ============================================================
+   API CONFIG
+   ============================================================ */
+
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
+/* ============================================================
+   GET AUTH TOKEN
+   ============================================================ */
+
+function getToken() {
+  return localStorage.getItem("token");
+}
+
+/* ============================================================
+   API REQUEST HELPER
+   ============================================================ */
+
+async function apiRequest(endpoint, options = {}) {
+  const token = getToken();
+
+  try {
+    const response = await fetch(`${API_URL}${endpoint}`, {
       ...options,
+
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+
+        ...(token
+          ? {
+              Authorization: `Bearer ${token}`,
+            }
+          : {}),
+
         ...(options.headers || {}),
       },
     });
@@ -366,44 +725,200 @@ async function schedulingRequest(path = "", options = {}) {
     }
 
     if (!response.ok) {
-      const error = new Error(data.message || "Interview request failed");
-
-      error.status = response.status;
-
-      throw error;
+      throw new Error(
+        data?.message ||
+          data?.error ||
+          `Request failed with status ${response.status}`,
+      );
     }
 
     return data;
   } catch (error) {
-    console.error("❌ Scheduling Request Error:", error);
+    console.error(`❌ API Error ${endpoint}:`, error);
 
     throw error;
   }
 }
 
-// =====================================================
-// SCHEDULED INTERVIEW FUNCTIONS
-// =====================================================
+/* ============================================================
+   CREATE SCHEDULED INTERVIEW
+   ============================================================ */
 
-export const createScheduledInterview = (data) =>
-  schedulingRequest("", {
+export async function createScheduledInterview(interviewData) {
+  return apiRequest("/api/interviews", {
     method: "POST",
-    body: JSON.stringify(data),
+
+    body: JSON.stringify(interviewData),
+  });
+}
+
+/* ============================================================
+   GET MY INTERVIEWS
+   ============================================================ */
+
+export async function getMyInterviews() {
+  const data = await apiRequest("/api/interviews/my", {
+    method: "GET",
   });
 
-export const getUpcomingInterviews = () => schedulingRequest("/upcoming");
+  /*
+    Return the array directly because
+    Interviews.jsx uses:
 
-export const getMyInterviews = () => schedulingRequest("/my");
+    setInterviews(data || [])
+  */
 
-export const getScheduledInterview = (id) => schedulingRequest(`/${id}`);
+  return data?.interviews || data?.data || [];
+}
 
-export const updateScheduledInterview = (id, data) =>
-  schedulingRequest(`/${id}`, {
+/* ============================================================
+   GET UPCOMING INTERVIEWS
+   ============================================================ */
+
+export async function getUpcomingInterviews() {
+  try {
+    const data = await apiRequest("/api/interviews/upcoming", {
+      method: "GET",
+    });
+
+    return data?.interviews || data?.data || [];
+  } catch (error) {
+    console.warn("⚠️ Failed to load upcoming interviews:", error);
+
+    return [];
+  }
+}
+
+/* ============================================================
+   GET SINGLE INTERVIEW
+   ============================================================ */
+
+export async function getInterviewById(interviewId) {
+  if (!interviewId) {
+    throw new Error("Interview ID is required.");
+  }
+
+  return apiRequest(`/api/interviews/${interviewId}`, {
+    method: "GET",
+  });
+}
+
+/* ============================================================
+   GET SCHEDULED INTERVIEW
+   ------------------------------------------------------------
+   Alias used by InterviewDetails.jsx
+   ============================================================ */
+
+export async function getScheduledInterview(interviewId) {
+  if (!interviewId) {
+    throw new Error("Interview ID is required.");
+  }
+
+  return apiRequest(`/api/interviews/${interviewId}`, {
+    method: "GET",
+  });
+}
+
+/* ============================================================
+   UPDATE INTERVIEW
+   ============================================================ */
+
+export async function updateInterview(interviewId, interviewData) {
+  if (!interviewId) {
+    throw new Error("Interview ID is required.");
+  }
+
+  return apiRequest(`/api/interviews/${interviewId}`, {
+    method: "PUT",
+
+    body: JSON.stringify(interviewData),
+  });
+}
+
+/* ============================================================
+   DELETE INTERVIEW
+   ============================================================ */
+
+export async function deleteInterview(interviewId) {
+  if (!interviewId) {
+    throw new Error("Interview ID is required.");
+  }
+
+  return apiRequest(`/api/interviews/${interviewId}`, {
+    method: "DELETE",
+  });
+}
+
+/* ============================================================
+   CANCEL INTERVIEW
+   ============================================================ */
+
+export async function cancelInterview(interviewId) {
+  if (!interviewId) {
+    throw new Error("Interview ID is required.");
+  }
+
+  return apiRequest(`/api/interviews/${interviewId}/cancel`, {
     method: "PATCH",
-    body: JSON.stringify(data),
   });
+}
 
-export const cancelScheduledInterview = (id) =>
-  schedulingRequest(`/${id}/cancel`, {
+/* ============================================================
+   CANCEL SCHEDULED INTERVIEW
+   ------------------------------------------------------------
+   Alias used by InterviewDetails.jsx
+   ============================================================ */
+
+export async function cancelScheduledInterview(interviewId) {
+  if (!interviewId) {
+    throw new Error("Interview ID is required.");
+  }
+
+  return apiRequest(`/api/interviews/${interviewId}/cancel`, {
     method: "PATCH",
   });
+}
+
+/* ============================================================
+   DEFAULT EXPORT
+   ============================================================ */
+
+export default {
+  /* AI Interview */
+
+  generateQuestion,
+
+  evaluateAnswer,
+
+  getRandomQuestion,
+
+  startInterviewSession,
+
+  getNextInterviewQuestion,
+
+  saveInterviewAnswer,
+
+  getInterviewSession,
+
+  resetInterviewSession,
+
+  /* Scheduled Interviews */
+
+  createScheduledInterview,
+
+  getMyInterviews,
+
+  getUpcomingInterviews,
+
+  getInterviewById,
+
+  getScheduledInterview,
+
+  updateInterview,
+
+  deleteInterview,
+
+  cancelInterview,
+
+  cancelScheduledInterview,
+};

@@ -1,149 +1,312 @@
+/* ============================================================
+   INTERVIEWS PAGE
+   ============================================================ */
+
 .interviews-page {
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: 48px 24px;
+  min-height: 100vh;
+  padding: 40px 6%;
+  background: #f6f8fc;
   color: #172033;
+  box-sizing: border-box;
 }
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+
 .interviews-header {
-  margin-bottom: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 32px;
 }
-.interviews-header h1 {
+
+.interviews-header > div {
+  max-width: 700px;
+}
+
+.eyebrow {
   margin: 0 0 8px;
-  font-size: 34px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #6366f1;
 }
-.interviews-header p:not(.eyebrow) {
+
+.interviews-header h1 {
   margin: 0;
-  color: #64748b;
+  font-size: 34px;
+  line-height: 1.2;
+  font-weight: 750;
+  color: #111827;
 }
+
+.interviews-header p:not(.eyebrow) {
+  margin: 10px 0 0;
+  color: #667085;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+/* ============================================================
+   ERROR
+   ============================================================ */
+
+.interview-error {
+  margin: 0 0 24px;
+  padding: 14px 18px;
+  border: 1px solid #fecaca;
+  border-radius: 10px;
+  background: #fef2f2;
+  color: #b91c1c;
+  font-size: 14px;
+}
+
+/* ============================================================
+   EMPTY STATE
+   ============================================================ */
+
+.interview-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  padding: 40px;
+  text-align: center;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.04);
+}
+
+.interview-empty::before {
+  content: "📅";
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  margin-bottom: 18px;
+  border-radius: 50%;
+  background: #eef2ff;
+  font-size: 28px;
+}
+
+.interview-empty h2 {
+  margin: 0 0 8px;
+  font-size: 21px;
+  color: #1f2937;
+}
+
+.interview-empty p {
+  margin: 0;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+/* ============================================================
+   INTERVIEW LIST
+   ============================================================ */
+
 .interview-list {
-  display: grid;
-  gap: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
+
+/* ============================================================
+   INTERVIEW CARD
+   ============================================================ */
+
 .interview-card {
   display: flex;
+  align-items: center;
   justify-content: space-between;
-  gap: 18px;
-  padding: 20px;
-  border: 1px solid #e2e8f0;
-  border-radius: 10px;
-  background: #fff;
+  gap: 24px;
+  padding: 24px 26px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  box-shadow: 0 3px 14px rgba(15, 23, 42, 0.04);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
 }
+
+.interview-card:hover {
+  transform: translateY(-2px);
+  border-color: #c7d2fe;
+  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.08);
+}
+
+/* ============================================================
+   CARD CONTENT
+   ============================================================ */
+
+.interview-card > div:first-child {
+  flex: 1;
+  min-width: 0;
+}
+
 .interview-card h2 {
-  margin: 0 0 5px;
-}
-.interview-card p {
-  margin: 6px 0;
-  color: #64748b;
-}
-.interview-status {
-  display: inline-block;
-  margin-top: 8px;
-  padding: 4px 8px;
-  border-radius: 999px;
-  font-size: 12px;
+  margin: 0 0 6px;
+  font-size: 19px;
   font-weight: 700;
+  color: #111827;
 }
+
+.interview-card p {
+  margin: 5px 0;
+  color: #667085;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.interview-card p:first-of-type {
+  color: #475467;
+  font-weight: 500;
+}
+
+/* ============================================================
+   CANDIDATE
+   ============================================================ */
+
+.interview-card p strong {
+  color: #344054;
+}
+
+/* ============================================================
+   STATUS
+   ============================================================ */
+
+.interview-status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 12px;
+  padding: 5px 11px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+/* Scheduled */
+
 .interview-status.scheduled {
-  background: #dcfce7;
-  color: #166534;
+  background: #ecfdf3;
+  color: #027a48;
 }
+
+/* Cancelled */
+
 .interview-status.cancelled {
-  background: #fee2e2;
-  color: #991b1b;
+  background: #fef3f2;
+  color: #b42318;
 }
+
+/* Completed */
+
 .interview-status.completed {
-  background: #e0e7ff;
-  color: #3730a3;
+  background: #eff8ff;
+  color: #175cd3;
 }
+
+/* Pending */
+
+.interview-status.pending {
+  background: #fffaeb;
+  color: #b54708;
+}
+
+/* ============================================================
+   VIEW BUTTON
+   ============================================================ */
+
 .interview-link {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  align-self: flex-start;
-  padding: 10px 14px;
-  border-radius: 7px;
-  background: #2563eb;
-  color: #fff;
-  text-decoration: none;
-  font-weight: 600;
-}
-.interview-empty {
-  padding: 48px 24px;
-  text-align: center;
-  border: 1px dashed #cbd5e1;
-  border-radius: 10px;
-}
-.interview-empty p,
-.interview-error {
-  color: #64748b;
-}
-.interview-error {
-  padding: 12px;
+  flex-shrink: 0;
+  min-width: 82px;
+  padding: 10px 18px;
   border-radius: 8px;
-  background: #fee2e2;
-  color: #991b1b;
-}
-.interview-detail {
-  padding: 28px;
-  border: 1px solid #e2e8f0;
-  border-radius: 10px;
-  background: #fff;
-}
-.interview-detail > a:first-child {
-  color: #2563eb;
+  background: #4f46e5;
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 14px;
   font-weight: 600;
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
-.interview-detail h1 {
-  margin: 24px 0 6px;
+
+.interview-link:hover {
+  background: #4338ca;
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 5px 12px rgba(79, 70, 229, 0.25);
 }
-.interview-detail h2 {
-  margin: 0;
-  color: #2563eb;
+
+/* ============================================================
+   LOADING
+   ============================================================ */
+
+.interviews-page > p:not(.interview-error) {
+  color: #667085;
+  font-size: 15px;
 }
-.interview-facts {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 16px;
-  margin: 28px 0;
-}
-.interview-facts p {
-  display: grid;
-  gap: 5px;
-  margin: 0;
-  color: #475569;
-}
-.interview-facts strong {
-  color: #172033;
-}
-.interview-notes {
-  padding: 16px;
-  border-left: 3px solid #2563eb;
-  background: #f8fafc;
-  color: #475569;
-}
-.interview-cancel {
-  border: 0;
-  border-radius: 7px;
-  padding: 11px 15px;
-  background: #dc2626;
-  color: #fff;
-  font-weight: 600;
-  cursor: pointer;
-}
-@media (max-width: 600px) {
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 768px) {
   .interviews-page {
-    padding: 32px 16px;
+    padding: 28px 20px;
   }
+
+  .interviews-header {
+    margin-bottom: 24px;
+  }
+
+  .interviews-header h1 {
+    font-size: 28px;
+  }
+
   .interview-card {
-    display: block;
-  }
-  .interview-link {
-    margin-top: 14px;
-  }
-  .interview-facts {
-    grid-template-columns: 1fr;
-  }
-  .interview-detail {
+    align-items: flex-start;
     padding: 20px;
+  }
+}
+
+@media (max-width: 560px) {
+  .interviews-page {
+    padding: 24px 16px;
+  }
+
+  .interviews-header h1 {
+    font-size: 24px;
+  }
+
+  .interviews-header p:not(.eyebrow) {
+    font-size: 14px;
+  }
+
+  .interview-card {
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .interview-card .interview-link {
+    width: 100%;
+  }
+
+  .interview-empty {
+    padding: 30px 20px;
   }
 }
