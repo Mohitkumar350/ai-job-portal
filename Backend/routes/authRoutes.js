@@ -1,275 +1,102 @@
-const { firebaseAdminAuth } = require("../config/firebaseAdmin");
 const express = require("express");
-const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
+const { firebaseAdminAuth } = require("../config/firebaseAdmin");
 const User = require("../models/User");
 
 const router = express.Router();
 
 // =====================================================
-// TEST
+// HELPER - Generate JWT
 // =====================================================
 
-router.get("/test", (req, res) => {
-  res.json({
-    message: "Auth route is working!",
+const generateJWT = (userId) => {
+  return jwt.sign({ userId }, process.env.JWT_SECRET, {
+    expiresIn: "7d",
   });
-});
+};
 
 // =====================================================
-// REGISTER
-// =====================================================
-
-router.post("/register", async (req, res) => {
-  try {
-    return res.status(410).json({
-      message: "Email registration now uses Firebase Authentication.",
-    });
-
-    console.log("=================================");
-    console.log("REGISTER BODY:", req.body);
-
-    const { name, email, password } = req.body;
-
-    // Validate
-    if (!name || !email || !password) {
-      return res.status(400).json({
-        message: "Please provide name, email and password",
-      });
-    }
-
-    // Normalize email
-    const normalizedEmail = email.trim().toLowerCase();
-
-    // Check existing user
-    const existingUser = await User.findOne({
-      email: normalizedEmail,
-    });
-
-    if (existingUser) {
-      return res.status(400).json({
-        message: "User already exists",
-      });
-    }
-
-    // Hash password
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    // Create user
-    const user = await User.create({
-      name: name.trim(),
-
-      email: normalizedEmail,
-
-      password: hashedPassword,
-
-      // New users are normal users
-      role: "user",
-    });
-
-    console.log("USER CREATED SUCCESSFULLY");
-
-    console.log("ID:", user._id);
-
-    console.log("NAME:", user.name);
-
-    console.log("EMAIL:", user.email);
-
-    console.log("ROLE:", user.role);
-
-    console.log("=================================");
-
-    return res.status(201).json({
-      message: "User registered successfully",
-
-      user: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-      },
-    });
-  } catch (error) {
-    console.error("REGISTER ERROR:", error);
-
-    return res.status(500).json({
-      message: "Server error",
-    });
-  }
-});
-
-// =====================================================
-// LOGIN
-// =====================================================
-
-router.post("/login", async (req, res) => {
-  try {
-    return res.status(410).json({
-      message: "Email login now uses Firebase Authentication.",
-    });
-
-    console.log("=================================");
-    console.log("LOGIN BODY:", req.body);
-
-    const { email, password } = req.body;
-
-    // Validate
-    if (!email || !password) {
-      return res.status(400).json({
-        message: "Please provide email and password",
-      });
-    }
-
-    // Normalize email
-    const normalizedEmail = email.trim().toLowerCase();
-
-    // Find user
-    const user = await User.findOne({
-      email: normalizedEmail,
-    });
-
-    console.log("USER FOUND:", user ? user.email : "NO");
-
-    if (!user) {
-      return res.status(401).json({
-        message: "User not found",
-      });
-    }
-
-    // Compare password
-    const isPasswordCorrect = await bcrypt.compare(password, user.password);
-
-    console.log("PASSWORD MATCH:", isPasswordCorrect);
-
-    if (!isPasswordCorrect) {
-      return res.status(401).json({
-        message: "Password incorrect",
-      });
-    }
-
-    // ==========================================
-    // JWT
-    // ==========================================
-
-    const token = jwt.sign(
-      {
-        userId: user._id,
-        role: user.role,
-      },
-
-      process.env.JWT_SECRET,
-
-      {
-        expiresIn: "7d",
-      },
-    );
-
-    console.log("USER ROLE:", user.role);
-
-    console.log("LOGIN SUCCESS");
-
-    console.log("=================================");
-
-    // ==========================================
-    // RESPONSE
-    // ==========================================
-
-    return res.status(200).json({
-      message: "Login successful",
-
-      token,
-
-      user: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-      },
-    });
-  } catch (error) {
-    console.error("LOGIN ERROR:", error);
-
-    return res.status(500).json({
-      message: "Server error",
-    });
-  }
-});
-
-// =====================================================
-// VERIFIED FIREBASE EMAIL LOGIN
 // POST /api/auth/firebase-email-login
+// Called after Firebase email/password sign-in
+// Body: { idToken, requestedRole? }
 // =====================================================
 
 router.post("/firebase-email-login", async (req, res) => {
   try {
-    const { idToken } = req.body;
+    const { idToken, requestedRole } = req.body;
 
     if (!idToken) {
       return res.status(400).json({ message: "Firebase ID token is required" });
     }
 
-    const decodedToken = await firebaseAdminAuth.verifyIdToken(idToken);
+    // Verify Firebase token
+    const decoded = await firebaseAdminAuth.verifyIdToken(idToken);
 
-    if (!decodedToken.email || decodedToken.email_verified !== true) {
-      return res.status(403).json({
-        message: "Please verify your email before logging in.",
-      });
+    const { uid, email, name, picture } = decoded;
+
+    if (!email) {
+      return res.status(400).json({ message: "Email is required for this login method" });
     }
 
-    const normalizedEmail = decodedToken.email.trim().toLowerCase();
-    const allowedRequestedRoles = new Set(["job_seeker", "employer"]);
-    const requestedRole = allowedRequestedRoles.has(req.body.requestedRole)
-      ? req.body.requestedRole
-      : "job_seeker";
-    let user = await User.findOne({
-      $or: [{ firebaseUid: decodedToken.uid }, { email: normalizedEmail }],
-    });
+    // Find or create user
+    let user = await User.findOne({ email: email.toLowerCase() });
 
     if (!user) {
+      // New user — assign requested role or default
+      const allowedRoles = ["job_seeker", "employer", "candidate", "user"];
+      const role =
+        requestedRole && allowedRoles.includes(requestedRole)
+          ? requestedRole
+          : "job_seeker";
+
       user = await User.create({
-        name: decodedToken.name || normalizedEmail.split("@")[0],
-        email: normalizedEmail,
-        firebaseUid: decodedToken.uid,
-        role: requestedRole,
+        name: name || email.split("@")[0],
+        email: email.toLowerCase(),
+        firebaseUid: uid,
+        photoURL: picture || "",
+        role,
       });
-    } else if (!user.firebaseUid) {
-      user.firebaseUid = decodedToken.uid;
-      await user.save();
+    } else {
+      // Existing user — update firebaseUid if missing
+      if (!user.firebaseUid) {
+        user.firebaseUid = uid;
+        await user.save();
+      }
     }
 
-    const token = jwt.sign(
-      { userId: user._id.toString() },
-      process.env.JWT_SECRET,
-      { expiresIn: "7d" },
-    );
+    const token = generateJWT(user._id);
 
     return res.status(200).json({
-      message: "Login successful",
       token,
       user: {
-        id: user._id,
+        _id: user._id,
         name: user.name,
-        email: user.email || normalizedEmail,
-        phone: user.phone || "",
+        email: user.email,
         role: user.role,
-        emailVerified: true,
-        photoURL: user.photoURL || "",
-        location: user.location || "",
-        bio: user.bio || "",
+        photoURL: user.photoURL,
+        resumeURL: user.resumeURL,
+        bio: user.bio,
+        location: user.location,
+        skills: user.skills,
+        phone: user.phone,
       },
     });
   } catch (error) {
     console.error("FIREBASE EMAIL LOGIN ERROR:", error);
-    return res
-      .status(401)
-      .json({ message: "Unable to verify your Firebase login." });
+
+    if (error.code === "auth/id-token-expired") {
+      return res.status(401).json({ message: "Session expired. Please login again." });
+    }
+
+    return res.status(500).json({ message: "Login failed. Please try again." });
   }
 });
 
 // =====================================================
-// PHONE OTP LOGIN
 // POST /api/auth/phone-login
+// Called after Firebase phone OTP verification
+// Body: { idToken }
 // =====================================================
 
 router.post("/phone-login", async (req, res) => {
@@ -277,101 +104,68 @@ router.post("/phone-login", async (req, res) => {
     const { idToken } = req.body;
 
     if (!idToken) {
-      return res.status(400).json({
-        message: "Firebase ID token is required",
-      });
+      return res.status(400).json({ message: "Firebase ID token is required" });
     }
 
-    // =================================================
-    // VERIFY FIREBASE ID TOKEN
-    // =================================================
+    // Verify Firebase token
+    const decoded = await firebaseAdminAuth.verifyIdToken(idToken);
 
-    const decodedToken = await firebaseAdminAuth.verifyIdToken(idToken);
+    const { uid, phone_number } = decoded;
 
-    const firebaseUid = decodedToken.uid;
-    const phoneNumber = decodedToken.phone_number;
-
-    if (!firebaseUid || !phoneNumber) {
-      return res.status(401).json({
-        message: "Firebase account does not contain a verified phone number",
-      });
+    if (!phone_number) {
+      return res.status(400).json({ message: "Phone number not found in token" });
     }
 
-    console.log("🔥 FIREBASE USER VERIFIED");
-    console.log("Firebase UID:", firebaseUid);
-    console.log("Phone:", phoneNumber);
-
-    // =================================================
-    // FIND EXISTING MONGODB USER
-    // =================================================
-
+    // Find or create user by firebaseUid or phone
     let user = await User.findOne({
-      $or: [{ firebaseUid: firebaseUid }, { phone: phoneNumber }],
+      $or: [{ firebaseUid: uid }, { phone: phone_number }],
     });
-
-    // =================================================
-    // CREATE USER IF NOT FOUND
-    // =================================================
 
     if (!user) {
       user = await User.create({
-        name: "Phone User",
-        phone: phoneNumber,
-        firebaseUid: firebaseUid,
-        role: "user",
+        name: phone_number,
+        phone: phone_number,
+        firebaseUid: uid,
+        role: "job_seeker",
       });
-
-      console.log("✅ NEW PHONE USER CREATED:", user._id);
     } else {
-      // Keep Firebase UID synced
-      if (!user.firebaseUid) {
-        user.firebaseUid = firebaseUid;
-        await user.save();
-      }
-
-      console.log("✅ EXISTING MONGODB USER FOUND:", user._id);
+      // Sync firebaseUid / phone if needed
+      let changed = false;
+      if (!user.firebaseUid) { user.firebaseUid = uid; changed = true; }
+      if (!user.phone) { user.phone = phone_number; changed = true; }
+      if (changed) await user.save();
     }
 
-    // =================================================
-    // CREATE YOUR EXISTING JWT
-    // =================================================
-
-    const token = jwt.sign(
-      {
-        userId: user._id.toString(),
-      },
-      process.env.JWT_SECRET,
-      {
-        expiresIn: "7d",
-      },
-    );
-
-    // =================================================
-    // RESPONSE
-    // =================================================
+    const token = generateJWT(user._id);
 
     return res.status(200).json({
-      message: "Phone login successful",
-
       token,
-
       user: {
-        id: user._id,
+        _id: user._id,
         name: user.name,
-        email: user.email || "",
-        phone: user.phone || "",
+        email: user.email,
         role: user.role,
-        photoURL: user.photoURL || "",
-        location: user.location || "",
-        bio: user.bio || "",
+        photoURL: user.photoURL,
+        resumeURL: user.resumeURL,
+        bio: user.bio,
+        location: user.location,
+        skills: user.skills,
+        phone: user.phone,
       },
     });
   } catch (error) {
     console.error("PHONE LOGIN ERROR:", error);
 
-    return res.status(401).json({
-      message: error.message || "Phone authentication failed",
-    });
+    if (error.code === "auth/id-token-expired") {
+      return res.status(401).json({ message: "Session expired. Please login again." });
+    }
+
+    return res.status(500).json({ message: "Phone login failed. Please try again." });
   }
 });
+
+// =====================================================
+// EXPORT ROUTER
+// =====================================================
+
 module.exports = router;
